@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSP Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        canvas {
+            border: 2px solid #003d7a;
+            margin: 20px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button {
+            background: #003d7a;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #002a5c;
+        }
+        h1 {
+            color: #003d7a;
+        }
+    </style>
+</head>
+<body>
+    <h1>⭐ Northern Star Painters Icon Generator</h1>
+    <p>Click the button below to generate app icons (192x192 and 512x512)</p>
+    
+    <canvas id="preview192" width="192" height="192"></canvas>
+    <canvas id="preview512" width="512" height="512" style="display:none;"></canvas>
+    
+    <button onclick="generateIcons()">🎨 Generate PNG Icons</button>
+    
+    <div id="status"></div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#003d7a';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Gold star
+            ctx.fillStyle = '#f4a624';
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size * 0.35;
+            
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * 4 * Math.PI / 5) - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+            
+            // NSP text
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.15}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('NSP', centerX, centerY + radius + (size * 0.12));
+        }
+
+        function generateIcons() {
+            const status = document.getElementById('status');
+            status.innerHTML = '<p style="color:#003d7a;">Generating icons...</p>';
+            
+            // Generate 192x192
+            const canvas192 = document.getElementById('preview192');
+            drawIcon(canvas192, 192);
+            canvas192.toBlob(blob => {
+                const link = document.createElement('a');
+                link.download = 'icon-192.png';
+                link.href = URL.createObjectURL(blob);
+                link.click();
+            });
+            
+            // Generate 512x512
+            const canvas512 = document.getElementById('preview512');
+            drawIcon(canvas512, 512);
+            canvas512.toBlob(blob => {
+                const link = document.createElement('a');
+                link.download = 'icon-512.png';
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                
+                status.innerHTML = '<p style="color:#28a745;font-weight:bold;">✅ Icons generated! Check your Downloads folder.</p>';
+            });
+        }
+        
+        // Draw preview on load
+        window.onload = () => {
+            drawIcon(document.getElementById('preview192'), 192);
+        };
+    </script>
+</body>
+</html>
