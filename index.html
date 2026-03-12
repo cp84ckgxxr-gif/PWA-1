@@ -1,0 +1,3055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Northern Star Painters - Professional Estimator</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#003d7a">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; overflow-x: hidden; }
+        body::after { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: -1; }
+        script { display: none !important; }
+        body > script ~ * { display: none !important; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .screen { display: none; padding: 30px; min-height: 400px; }
+        .screen.active { display: block; }
+        .nav-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .btn { padding: 18px 25px; font-size: 16px; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .btn-warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .btn-info { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-back { background: #f8f9fa; color: #333; padding: 12px 20px; font-size: 14px; margin-bottom: 20px; }
+        .btn-small { padding: 8px 15px; font-size: 14px; }
+        .btn-large { padding: 20px 30px; font-size: 18px; margin: 10px 0; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; transition: border 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
+        .hidden { display: none !important; }
+        .screen-title { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #333; text-align: center; }
+        .screen-subtitle { font-size: 16px; color: #666; margin-bottom: 30px; text-align: center; }
+        .selection-grid { display: grid; gap: 15px; margin: 20px 0; }
+        .selection-card { background: #f8f9fa; padding: 20px; border-radius: 12px; cursor: pointer; transition: all 0.3s; border: 3px solid transparent; }
+        .selection-card:hover { background: #e9ecef; transform: translateY(-2px); }
+        .selection-card.selected { border-color: #667eea; background: #e7f0ff; }
+        .selection-card h3 { color: #333; margin-bottom: 5px; }
+        .selection-card p { color: #666; font-size: 14px; }
+        .progress-bar { background: #e0e0e0; height: 6px; border-radius: 3px; margin-bottom: 20px; }
+        .progress-fill { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; border-radius: 3px; transition: width 0.3s; }
+        .step-indicator { text-align: center; color: #666; font-size: 14px; margin-bottom: 10px; }
+        .room-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; }
+        .room-card h3 { color: #333; margin-bottom: 10px; }
+        .room-stats { color: #666; font-size: 14px; margin-top: 10px; }
+        .surface-btn { background: white; border: 2px solid #667eea; color: #667eea; padding: 15px; border-radius: 8px; margin: 8px 0; cursor: pointer; transition: all 0.3s; font-weight: 600; }
+        .surface-btn:hover { background: #667eea; color: white; }
+        .surface-btn.added { background: #11998e; border-color: #11998e; color: white; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 400px; width: 100%; }
+        .login-box h2 { color: #1e3c72; margin-bottom: 30px; text-align: center; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .photo-preview { max-width: 150px; max-height: 150px; border-radius: 8px; margin-top: 10px; display: block; }
+        @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="login-screen">
+        <div class="login-box">
+            <h2>⭐ Northern Star Painters</h2>
+            <div class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen hidden">
+        <div class="login-box">
+            <h2>⭐ Northern Star Painters</h2>
+            <p style="text-align:center; color:#666; margin-bottom:20px;">Enter your email to get started</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required placeholder="your@email.com">
+                </div>
+                <button type="submit" class="btn btn-primary">Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="container hidden">
+        <div class="header">
+            <h1>⭐ Northern Star Painters</h1>
+            <p>Professional Estimating System</p>
+        </div>
+
+        <!-- HOME SCREEN -->
+        <div id="homeScreen" class="screen active">
+            <h2 class="screen-title">Dashboard</h2>
+            <div class="nav-buttons">
+                <button class="btn btn-primary" onclick="showScreen('customersScreen')">👥 Customers</button>
+                <button class="btn btn-success" onclick="startNewEstimate()">➕ New Estimate</button>
+                <button class="btn btn-warning" onclick="showScreen('jobsScreen')">📋 View Jobs</button>
+                <button class="btn btn-info" onclick="showScreen('productsScreen')">🎨 Products</button>
+                <button class="btn btn-primary" onclick="showScreen('profilesScreen')">📦 Profiles</button>
+                <button class="btn btn-info" onclick="showScreen('settingsScreen')">⚙️ Settings</button>
+            </div>
+            <div style="margin-top:20px; text-align:center;">
+                <button class="btn btn-secondary btn-small" onclick="logout()">Sign Out</button>
+            </div>
+        </div>
+
+        <!-- NEW ESTIMATE: STEP 1 - CUSTOMER SELECTION -->
+        <div id="estimateStep1Screen" class="screen">
+            <div class="step-indicator">Step 1 of 6</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 16.6%"></div></div>
+            <button class="btn btn-primary" onclick="showScreen('homeScreen')" style="margin-right:10px;">🏠 Home</button>
+            <button class="btn btn-back" onclick="showScreen('homeScreen')">← Cancel</button>
+            <h2 class="screen-title">Select Customer</h2>
+            <p class="screen-subtitle">Choose a customer or create a new one</p>
+            <div id="customerSelectionList"></div>
+            <button class="btn btn-success btn-large" onclick="showScreen('newCustomerScreen')">➕ Add New Customer</button>
+        </div>
+
+        <!-- NEW ESTIMATE: STEP 2 - JOB TYPE -->
+        <div id="estimateStep2Screen" class="screen">
+            <div class="step-indicator">Step 2 of 6</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 33.3%"></div></div>
+            <button class="btn btn-primary" onclick="showScreen('homeScreen')" style="margin-right:10px;">🏠 Home</button>
+            <button class="btn btn-back" onclick="goToEstimateStep(1)">← Back</button>
+            <h2 class="screen-title">Select Job Type</h2>
+            <p class="screen-subtitle">⚠️ This cannot be changed after continuing</p>
+            <div class="selection-grid">
+                <div class="selection-card" onclick="selectJobType('Interior')">
+                    <h3>🏠 Interior</h3>
+                    <p>Paint rooms, walls, ceilings, trim</p>
+                </div>
+                <div class="selection-card" onclick="selectJobType('Exterior')">
+                    <h3>🌳 Exterior</h3>
+                    <p>Paint siding, trim, doors, windows</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW ESTIMATE: STEP 3 - SCENARIO/PROFILE -->
+        <div id="estimateStep3Screen" class="screen">
+            <div class="step-indicator">Step 3 of 6</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
+            <button class="btn btn-primary" onclick="showScreen('homeScreen')" style="margin-right:10px;">🏠 Home</button>
+            <button class="btn btn-back" onclick="goToEstimateStep(2)">← Back</button>
+            <h2 class="screen-title">Select Product Profile</h2>
+            <p class="screen-subtitle">Choose a profile or select products manually</p>
+            <div id="profileSelectionList" class="selection-grid"></div>
+            <button class="btn btn-secondary btn-large" onclick="selectProfile(null)">Skip - Select Products Manually</button>
+        </div>
+
+        <!-- NEW ESTIMATE: STEP 4 - ALL SIDES/ROOMS AS CARDS -->
+        <div id="estimateStep4Screen" class="screen">
+            <div class="step-indicator">Step 4 of 6</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 66.6%"></div></div>
+            <button class="btn btn-primary" onclick="showScreen('homeScreen')" style="margin-right:10px;">🏠 Home</button>
+            <button class="btn btn-back" onclick="goToEstimateStep(3)">← Back</button>
+            <h2 class="screen-title" id="step4Title">Select Sides/Rooms</h2>
+            <p class="screen-subtitle" id="step4Subtitle">Click each side/room to add surfaces</p>
+            
+            <div id="sidesRoomsCards"></div>
+            
+            <div class="form-group" style="margin-top:20px;">
+                <label>Add Custom Side/Room:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="customRoomInput" placeholder="Enter custom name">
+                    <button class="btn btn-primary" onclick="addCustomSideRoom()">Add</button>
+                </div>
+            </div>
+            
+            <div style="margin-top:20px;padding:15px;background:#f8f9fa;border-radius:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <strong>Total Estimate:</strong>
+                    <strong style="font-size:18pt;color:#11998e;" id="step4TotalDisplay">$0.00</strong>
+                </div>
+            </div>
+            
+            <button class="btn btn-success btn-large" onclick="goToEstimateStep(6)" id="continueToReviewBtn">Review Estimate →</button>
+        </div>
+
+        <!-- SURFACE SELECTION SCREEN (for one side/room) -->
+        <div id="surfaceSelectionScreen" class="screen">
+            <div style="display:flex;gap:10px;margin-bottom:15px;">
+                <button class="btn btn-primary" onclick="showScreen('homeScreen')" style="flex:0 0 auto;">🏠 Home</button>
+                <button class="btn btn-back" onclick="backToSidesRooms()" style="flex:1;">← Back to Sides/Rooms</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <h2 class="screen-title" id="currentSideName" style="margin:0;">Side/Room</h2>
+                <button class="btn btn-danger" onclick="deleteSideRoom()" style="padding:8px 15px;">🗑️ Delete</button>
+            </div>
+            <p class="screen-subtitle">Click surfaces to configure</p>
+            
+            <div id="surfaceBoxesContainer"></div>
+            
+            <div style="margin-top:20px;padding:15px;background:#f8f9fa;border-radius:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <strong id="sideRoomTotalLabel">Total for this side:</strong>
+                    <strong style="font-size:16pt;color:#11998e;" id="sideRoomTotal">$0.00</strong>
+                </div>
+            </div>
+            
+            <button class="btn btn-success btn-large" onclick="backToSidesRooms()">✓ Done</button>
+        </div>
+
+
+        <!-- ROOM/SIDE DETAIL HUB -->
+        <div id="roomDetailScreen" class="screen">
+            <button class="btn btn-primary" onclick="showScreen('homeScreen')" style="margin-right:10px;">🏠 Home</button>
+            <button class="btn btn-back" onclick="backToOverview()">← Back to Overview</button>
+            <h2 class="screen-title" id="roomDetailTitle">Room Detail</h2>
+            
+            <div class="room-card">
+                <h3>Setup & Details</h3>
+                <div class="form-group">
+                    <label>Setup Hours (labor @ $60/hr)</label>
+                    <input type="number" id="roomSetupHours" value="0" min="0" step="0.5" onchange="updateRoomDetail()">
+                </div>
+                
+                <div id="roomDimensionsSection" class="hidden">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Length (ft)</label>
+                            <input type="number" id="roomLength" step="0.1" min="0" onchange="updateRoomDetail()">
+                        </div>
+                        <div class="form-group">
+                            <label>Width (ft)</label>
+                            <input type="number" id="roomWidth" step="0.1" min="0" onchange="updateRoomDetail()">
+                        </div>
+                        <div class="form-group">
+                            <label>Height (ft)</label>
+                            <input type="number" id="roomHeight" value="8" step="0.1" min="0" onchange="updateRoomDetail()">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Photo (Optional)</label>
+                    <input type="file" id="roomPhoto" accept="image/*" onchange="handleRoomPhotoUpload(event)">
+                    <img id="roomPhotoPreview" class="photo-preview hidden">
+                </div>
+                
+                <div class="form-group">
+                    <label>Notes (appears in proposal)</label>
+                    <textarea id="roomNotes" rows="3" placeholder="Optional notes for this room/side"></textarea>
+                </div>
+            </div>
+            
+            <div class="room-card">
+                <h3>Surfaces</h3>
+                <p style="color:#666;margin-bottom:15px;">Click to add/configure each surface</p>
+                <div id="surfaceCardsList"></div>
+            </div>
+            
+            <div class="room-card">
+                <h3>Totals</h3>
+                <div class="room-stats">
+                    <p><strong>Labor:</strong> <span id="roomLaborTotal">$0.00</span></p>
+                    <p><strong>Materials:</strong> <span id="roomMaterialTotal">$0.00</span></p>
+                    <p><strong>Total:</strong> <span id="roomGrandTotal">$0.00</span></p>
+                </div>
+            </div>
+            
+            <button class="btn btn-success btn-large" onclick="saveRoomAndContinue()">Save & Continue →</button>
+        </div>
+
+        <!-- SURFACE CONFIGURATION MODAL -->
+        <div id="surfaceConfigModal" class="screen">
+            <button class="btn btn-back" onclick="closeSurfaceConfig()">← Back to Room</button>
+            <h2 class="screen-title" id="surfaceConfigTitle">Configure Surface</h2>
+            
+            <div class="room-card">
+                <h3>Quantity</h3>
+                <div class="form-group">
+                    <label id="surfaceQuantityLabel">Quantity</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="number" id="surfaceQuantity" step="0.01" min="0" style="flex: 1;">
+                        <span id="surfaceUnit" style="color:#666;"></span>
+                    </div>
+                    <p id="autoCalcNote" class="hidden" style="color:#11998e;font-size:12px;margin-top:5px;">✓ Auto-calculated from room dimensions</p>
+                </div>
+            </div>
+            
+            <div class="room-card">
+                <h3>Paint/Primer</h3>
+                <div class="form-group">
+                    <label>Product</label>
+                    <select id="surfaceProduct"></select>
+                </div>
+                <div class="form-group">
+                    <label>Sheen</label>
+                    <select id="surfaceSheen">
+                        <option value="Flat">Flat</option>
+                        <option value="Matte">Matte</option>
+                        <option value="Eggshell">Eggshell</option>
+                        <option value="Satin">Satin</option>
+                        <option value="Semi-Gloss">Semi-Gloss</option>
+                        <option value="Soft Gloss">Soft Gloss</option>
+                        <option value="Gloss">Gloss</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="text" id="surfaceColor" placeholder="TBD, Match, or color name">
+                </div>
+                <div class="form-group">
+                    <label>Coats</label>
+                    <select id="surfaceCoats">
+                        <option value="1">1 Coat</option>
+                        <option value="2">2 Coats</option>
+                        <option value="3">3 Coats</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn btn-success btn-large" onclick="saveSurface()">Save Surface</button>
+        </div>
+
+        <!-- NEW ESTIMATE: STEP 6 - REVIEW -->
+        <div id="estimateStep6Screen" class="screen">
+            <div class="step-indicator">Step 6 of 6</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            <button class="btn btn-primary" onclick="showScreen('homeScreen')" style="margin-right:10px;">🏠 Home</button>
+            <button class="btn btn-back" onclick="goToEstimateStep(4)">← Back</button>
+            <h2 class="screen-title">Review Estimate</h2>
+            <div id="estimateReviewContent"></div>
+            <!-- Discount Section -->
+            <div class="room-card">
+                <h3>Add Discount (Optional)</h3>
+                <div class="form-group">
+                    <label>Discount Name</label>
+                    <input type="text" id="discountName" placeholder="e.g., Summer Discount, Veterans Discount" oninput="updateDiscountPreview()">
+                </div>
+                <div class="form-group">
+                    <label>Discount Type</label>
+                    <select id="discountType" onchange="updateDiscountPreview()">
+                        <option value="">-- No Discount --</option>
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="fixed">Fixed Amount ($)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="discountValueGroup" style="display: none;">
+                    <label id="discountValueLabel">Value</label>
+                    <input type="number" id="discountValue" placeholder="0" min="0" step="0.01" oninput="updateDiscountPreview()">
+                </div>
+            </div>
+
+            <!-- Project Summary Notes -->
+            <div class="room-card">
+                <h3>Project Summary Notes (Optional)</h3>
+                <div class="form-group">
+                    <label>Custom message for proposal (appears after room list in Project Summary)</label>
+                    <textarea id="projectSummaryNotes" rows="4" placeholder="e.g., We're excited to transform your home with premium Benjamin Moore paints and our expert crew."></textarea>
+                </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="room-card">
+                <h3>Price Summary</h3>
+                <div class="room-stats" style="font-size: 18px;">
+                    <p><strong>Base Price:</strong> <span id="reviewBasePrice">$0.00</span></p>
+                    <p id="discountRow" style="display: none;"><strong><span id="discountDisplayName">Discount</span>:</strong> <span id="reviewDiscountAmount" style="color: #e74c3c;">-$0.00</span></p>
+                    <hr style="margin: 10px 0;">
+                    <p><strong>Subtotal:</strong> <span id="reviewSubtotal">$0.00</span></p>
+                    <p><strong>Deposit Due (50%):</strong> <span id="reviewDeposit">$0.00</span></p>
+                    <p><strong>Balance:</strong> <span id="reviewBalance">$0.00</span></p>
+                    <p style="font-size: 24px; color: #667eea; margin-top: 15px;"><strong>TOTAL:</strong> <span id="reviewGrandTotal">$0.00</span></p>
+                </div>
+            </div>
+
+            <!-- PDF Options -->
+            <div class="room-card">
+                <h3>PDF Options</h3>
+                <div class="form-group">
+                    <label>Project Details Display</label>
+                    <select id="pdfDetailLevel">
+                        <option value="breakdown">Show room-by-room breakdown (detailed table)</option>
+                        <option value="total">Show total only (simple, no room details)</option>
+                    </select>
+                    <p style="font-size:12px;color:#666;margin-top:8px;">Choose whether to show the detailed surface breakdown table or just the totals in the PDF proposal.</p>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-success" onclick="saveEstimate()">💾 Save Estimate</button>
+                <button class="btn btn-warning" onclick="generateProposal()">📄 Generate Proposal</button>
+            </div>
+        </div>
+
+        <!-- EXISTING SCREENS (Customers, Products, Profiles, Settings, Jobs) -->
+        <!-- These remain mostly the same, I'll add them in the next part -->
+        
+        <!-- CUSTOMERS SCREEN -->
+        <div id="customersScreen" class="screen">
+            <button class="btn btn-back" onclick="showScreen('homeScreen')">← Back</button>
+            <h2 class="screen-title">Customers</h2>
+            <button class="btn btn-success" onclick="showScreen('newCustomerScreen')" style="margin-bottom: 20px;">➕ New Customer</button>
+            <div id="customerList"></div>
+        </div>
+
+        <!-- NEW CUSTOMER SCREEN -->
+        <div id="newCustomerScreen" class="screen">
+            <button class="btn btn-back" onclick="showScreen('customersScreen')">← Back</button>
+            <h2 class="screen-title">New Customer</h2>
+            <form id="customerForm" onsubmit="saveCustomer(event)">
+                <div class="form-group"><label>Customer Name *</label><input type="text" id="customerName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="customerEmail"></div>
+                <div class="form-group"><label>Phone</label><input type="tel" id="customerPhone"></div>
+                <div class="form-group"><label>Address</label><textarea id="customerAddress" rows="3"></textarea></div>
+                <div class="nav-buttons">
+                    <button type="submit" class="btn btn-success">💾 Save Customer</button>
+                    <button type="button" class="btn btn-secondary" onclick="showScreen('customersScreen')">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PRODUCTS SCREEN -->
+        <div id="productsScreen" class="screen">
+            <button class="btn btn-back" onclick="showScreen('homeScreen')">← Back</button>
+            <h2 class="screen-title">Products</h2>
+            <button class="btn btn-success" onclick="showScreen('newProductScreen')" style="margin-bottom: 20px;">➕ Add Product</button>
+            <div id="productList"></div>
+        </div>
+
+        <!-- NEW PRODUCT SCREEN -->
+        <div id="newProductScreen" class="screen">
+            <button class="btn btn-back" onclick="cancelProductEdit()">← Back</button>
+            <h2 class="screen-title" id="productFormTitle">New Product</h2>
+            <form id="productForm" onsubmit="saveProduct(event)">
+                <input type="hidden" id="productId">
+                <div class="form-group"><label>Product Name *</label><input type="text" id="productName" required></div>
+                <div class="form-group"><label>Brand *</label><select id="productBrand" required>
+                    <option value="">-- Select Brand --</option>
+                    <option value="Benjamin Moore">Benjamin Moore</option>
+                    <option value="Sherwin Williams">Sherwin Williams</option>
+                    <option value="Behr">Behr</option>
+                    <option value="Other">Other</option>
+                </select></div>
+                <div class="form-group"><label>Sheen *</label><select id="productSheen" required>
+                    <option value="">-- Select Sheen --</option>
+                    <option value="Soft Gloss">Soft Gloss</option>
+                    <option value="Semi-Gloss">Semi-Gloss</option>
+                    <option value="Matte">Matte</option>
+                    <option value="Flat">Flat</option>
+                    <option value="Eggshell">Eggshell</option>
+                    <option value="Satin">Satin</option>
+                </select></div>
+                <div class="form-group"><label>Type *</label><select id="productType" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="Exterior">Exterior</option>
+                    <option value="Interior">Interior</option>
+                    <option value="Both">Both</option>
+                </select></div>
+                <div class="nav-buttons">
+                    <button type="submit" class="btn btn-success">💾 Save Product</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelProductEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PROFILES SCREEN -->
+        <div id="profilesScreen" class="screen">
+            <button class="btn btn-back" onclick="showScreen('homeScreen')">← Back</button>
+            <h2 class="screen-title">Product Profiles</h2>
+            <button class="btn btn-success" onclick="showScreen('newProfileScreen')" style="margin-bottom: 20px;">➕ Create Profile</button>
+            <div id="profileList"></div>
+        </div>
+
+        <!-- NEW PROFILE SCREEN -->
+        <div id="newProfileScreen" class="screen">
+            <button class="btn btn-back" onclick="cancelProfileEdit()">← Back</button>
+            <h2 class="screen-title" id="profileFormTitle">New Profile</h2>
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <input type="hidden" id="profileId">
+                <div class="form-group"><label>Profile Name *</label><input type="text" id="profileName" required></div>
+                <div class="form-group"><label>Job Type *</label><select id="profileType" required onchange="updateProfileSurfaces()">
+                    <option value="">-- Select Type --</option>
+                    <option value="Exterior">Exterior</option>
+                    <option value="Interior">Interior</option>
+                </select></div>
+                <div id="profileSurfacesSection" class="hidden">
+                    <h3 style="margin: 20px 0 15px;">Surface Product Mapping</h3>
+                    <div id="profileSurfacesList"></div>
+                </div>
+                <div class="nav-buttons hidden" id="profileSaveButtons">
+                    <button type="submit" class="btn btn-success">💾 Save Profile</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelProfileEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- SETTINGS SCREEN -->
+        <div id="settingsScreen" class="screen">
+            <button class="btn btn-back" onclick="showScreen('homeScreen')">← Back</button>
+            <h2 class="screen-title">Company Settings</h2>
+            
+            <!-- QUICK ACCESS TO PRICE SETTINGS -->
+            <div style="margin-bottom:20px;">
+                <button class="btn btn-warning" onclick="showScreen('priceSettingsScreen')" style="width:100%;font-size:16px;">💰 Price Settings</button>
+            </div>
+            
+            <div class="room-card">
+                <h3>Company Information</h3>
+                <div class="form-group"><label>Company Name</label><input type="text" id="companyName" value="Northern Star Painters"></div>
+                <div class="form-group"><label>Address</label><textarea id="companyAddress" rows="2">1300 4th Street SE, Suite 412, Washington DC 20003</textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Phone</label><input type="tel" id="companyPhone" value="+1 (202) 743-5072"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="companyEmail" value="info@northernstarpainters.com"></div>
+                </div>
+                <div class="form-group"><label>Website</label><input type="text" id="companyWebsite" value="www.northernstarpainters.com"></div>
+                <div class="form-group"><label>Company Logo</label><input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)">
+                <img id="logoPreview" class="photo-preview hidden"></div>
+            </div>
+
+            <div class="room-card">
+                <h3>Sales Consultant Information</h3>
+                <div class="form-group"><label>Name</label><input type="text" id="consultantName"></div>
+                <div class="form-group"><label>Title/Role</label><input type="text" id="consultantTitle"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Phone</label><input type="tel" id="consultantPhone"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="consultantEmail"></div>
+                </div>
+                <div class="form-group"><label>Photo</label><input type="file" id="consultantPhotoUpload" accept="image/*" onchange="handleConsultantPhotoUpload(event)">
+                <img id="consultantPhotoPreview" class="photo-preview hidden"></div>
+            </div>
+
+            <!-- CONTRACT EDITOR -->
+            <div class="room-card">
+                <h3>Contract Terms Editor</h3>
+                <p style="color:#666;margin-bottom:15px;">Edit your contract terms that appear in PDF proposals. Changes apply to all future proposals.</p>
+                
+                <!-- Tabs -->
+                <div style="display:flex;gap:10px;margin-bottom:15px;border-bottom:2px solid #ddd;">
+                    <button id="interiorContractTab" class="contract-tab active" onclick="switchContractTab('interior')" style="padding:10px 20px;background:none;border:none;border-bottom:3px solid #667eea;font-weight:bold;cursor:pointer;color:#667eea;">Interior Contract</button>
+                    <button id="exteriorContractTab" class="contract-tab" onclick="switchContractTab('exterior')" style="padding:10px 20px;background:none;border:none;border-bottom:3px solid transparent;font-weight:normal;cursor:pointer;color:#666;">Exterior Contract</button>
+                </div>
+                
+                <!-- Formatting Guide -->
+                <div style="background:#f8f9fa;padding:12px;border-radius:6px;margin-bottom:15px;font-size:11pt;">
+                    <strong>Formatting Guide:</strong><br>
+                    <code style="background:#fff;padding:2px 6px;border-radius:3px;margin-right:10px;">ALL CAPS TEXT</code> → Blue section header<br>
+                    <code style="background:#fff;padding:2px 6px;border-radius:3px;margin-right:10px;">**Bold Text**</code> → Bold<br>
+                    <code style="background:#fff;padding:2px 6px;border-radius:3px;margin-right:10px;">- Bullet point</code> → • Bullet<br>
+                    <code style="background:#fff;padding:2px 6px;border-radius:3px;">Blank line</code> → Spacing
+                </div>
+                
+                <!-- Interior Contract Editor -->
+                <div id="interiorContractEditor" class="contract-editor">
+                    <textarea id="interiorContractText" rows="20" style="width:100%;font-family:monospace;font-size:11pt;padding:10px;border:2px solid #ddd;border-radius:6px;" placeholder="Enter interior contract terms..."></textarea>
+                </div>
+                
+                <!-- Exterior Contract Editor -->
+                <div id="exteriorContractEditor" class="contract-editor hidden">
+                    <textarea id="exteriorContractText" rows="20" style="width:100%;font-family:monospace;font-size:11pt;padding:10px;border:2px solid #ddd;border-radius:6px;" placeholder="Enter exterior contract terms..."></textarea>
+                </div>
+                
+                <button class="btn btn-info" onclick="saveContractTerms()" style="margin-top:15px;">💾 Save Contract Terms</button>
+            </div>
+
+            <button class="btn btn-success btn-large" onclick="saveCompanySettings()">💾 Save Settings</button>
+        </div>
+
+        <!-- PRICE SETTINGS SCREEN -->
+        <div id="priceSettingsScreen" class="screen">
+            <button class="btn btn-back" onclick="showScreen('settingsScreen')">← Back</button>
+            <h2 class="screen-title">💰 Price Settings</h2>
+            
+            <p style="color:#666;margin-bottom:20px;">Edit your pricing rates and surface calculations. Changes apply to all new estimates.</p>
+            
+            <!-- Tabs -->
+            <div style="display:flex;gap:10px;margin-bottom:20px;border-bottom:2px solid #ddd;">
+                <button id="globalPricingTab" class="pricing-tab" onclick="switchPricingTab('global')" style="padding:10px 20px;background:none;border:none;border-bottom:3px solid #667eea;font-weight:bold;cursor:pointer;color:#667eea;">Global Rates</button>
+                <button id="exteriorPricingTab" class="pricing-tab" onclick="switchPricingTab('exterior')" style="padding:10px 20px;background:none;border:none;border-bottom:3px solid transparent;font-weight:normal;cursor:pointer;color:#666;">Exterior Surfaces</button>
+                <button id="interiorPricingTab" class="pricing-tab" onclick="switchPricingTab('interior')" style="padding:10px 20px;background:none;border:none;border-bottom:3px solid transparent;font-weight:normal;cursor:pointer;color:#666;">Interior Surfaces</button>
+            </div>
+            
+            <!-- GLOBAL RATES TAB -->
+            <div id="globalPricingPanel" class="pricing-panel">
+                <div class="room-card">
+                    <h3>💵 Global Rates</h3>
+                    <p style="color:#666;margin-bottom:15px;">These rates are used across all calculations.</p>
+                    
+                    <div class="form-group">
+                        <label>Labor Rate ($/hour)</label>
+                        <input type="number" id="globalLaborRate" step="1" min="0" placeholder="60">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Exterior Paint Price ($/gallon)</label>
+                        <input type="number" id="exteriorPaintPrice" step="1" min="0" placeholder="45">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Interior Paint Price ($/gallon)</label>
+                        <input type="number" id="interiorPaintPrice" step="1" min="0" placeholder="75">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- EXTERIOR SURFACES TAB -->
+            <div id="exteriorPricingPanel" class="pricing-panel hidden">
+                <div class="room-card">
+                    <h3>🏠 Exterior Surfaces</h3>
+                    <p style="color:#666;margin-bottom:15px;">Configure labor rates and paint coverage for each exterior surface.</p>
+                    <p style="background:#f8f9fa;padding:10px;border-radius:6px;margin-bottom:10px;font-size:10pt;"><strong>Legend:</strong> Labor Rate = how much work can be done per hour. Spread Rate = how much area one gallon covers.</p>
+                    <div id="exteriorSurfacesList"></div>
+                    <button class="btn btn-info" onclick="alert('Add Custom Surface - Coming soon!')" style="margin-top:15px;">➕ Add Custom Surface</button>
+                </div>
+            </div>
+            
+            <!-- INTERIOR SURFACES TAB -->
+            <div id="interiorPricingPanel" class="pricing-panel hidden">
+                <div class="room-card">
+                    <h3>🏡 Interior Surfaces</h3>
+                    <p style="color:#666;margin-bottom:15px;">Configure labor rates and paint coverage for each interior surface.</p>
+                    <p style="background:#f8f9fa;padding:10px;border-radius:6px;margin-bottom:10px;font-size:10pt;"><strong>Legend:</strong> Labor Rate = how much work can be done per hour. Spread Rate = how much area one gallon covers.</p>
+                    <div id="interiorSurfacesList"></div>
+                    <button class="btn btn-info" onclick="alert('Add Custom Surface - Coming soon!')" style="margin-top:15px;">➕ Add Custom Surface</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-success btn-large" onclick="savePriceSettings()">💾 Save Price Settings</button>
+        </div>
+
+
+        <!-- JOBS SCREEN -->
+        <div id="jobsScreen" class="screen">
+            <button class="btn btn-back" onclick="showScreen('homeScreen')">← Back</button>
+            <h2 class="screen-title">All Jobs</h2>
+            <div id="jobList"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyASZRtqfsVr53MlcR7kVbCDoCc0INusueo",
+            authDomain: "northern-star-painters.firebaseapp.com",
+            projectId: "northern-star-painters",
+            storageBucket: "northern-star-painters.firebasestorage.app",
+            messagingSenderId: "373144633102",
+            appId: "1:373144633102:web:4c3451cc855e8f8ff1215f"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Global state
+        window.currentUser = null;
+        window.companySettings = null;
+        window.contractTerms = null; // Store loaded contract terms
+        window.customers = [];
+        window.products = [];
+        window.profiles = [];
+        window.jobs = [];
+        
+        // Current estimate state
+        window.currentEstimate = {
+            customerId: null,
+            customerName: '',
+            jobName: '',
+            jobType: '', // Interior or Exterior
+            profileId: null,
+            rooms: [], // Array of room objects with surfaces
+            totalLabor: 0,
+            totalMaterials: 0,
+            grandTotal: 0
+        };
+        
+        window.currentRoom = null; // Currently editing room
+        window.currentSurface = null; // Currently editing surface
+        window.editingProductId = null;
+        window.editingProfileId = null;
+
+        // Pricing constants (keep existing pricing)
+        const PRICING = {
+            LaborRate: 60,
+            SidingLaborRate: 100,
+            SidingPaintCoverage: 250,
+            SoffitLaborRate: 25,
+            SoffitPaintCoverage: 150,
+            FasciaLaborRate: 25,
+            FasciaPaintCoverage: 150,
+            WindowLaborRate: 4,
+            WindowPaintCoverage: 40,
+            DoorLaborHours: 0.25,
+            DoorPaintCoverage: 18,
+            BayWindowLaborHours: 1,
+            RailingLaborHours: 1,
+            RailingPaintCost: 15,
+            PrepHoursPerSide: 2,
+            WashHoursPerSide: 2,
+            PaintPricePerGallon: 45,
+            InteriorPaintPricePerGallon: 75,
+            WallCeilingLaborRate: 200,
+            WallCeilingPaintCoverage: 400,
+            WallStandardCoats: 2,
+            CeilingStandardCoats: 2,
+            InteriorDoorLaborHours: 0.25,
+            InteriorDoorPaintCoverage: 18,
+            InteriorWindowLaborRate: 4,
+            InteriorWindowPaintCoverage: 40,
+            BaseboardLaborRate: 60,
+            BaseboardPaintCoverage: 800,
+            ClosetFlatRate: 130,
+            CabinetDoorPrice: 180,
+            CabinetDrawerPrice: 80,
+            SpindlePricePerCoat: 10,
+            SpindleStandardCoats: 2
+        };
+
+        // Surface definitions
+        const EXTERIOR_SURFACES = ['Siding', 'Soffit', 'Fascia', 'Windows', 'Front Door', 'Front Door Frame', 
+                                    'Garage Door', 'Garage Door Frame', 'Shutters', 'Bay Windows', 'Railings'];
+        const INTERIOR_SURFACES = ['Walls', 'Ceiling', 'Doors', 'Windows', 'Baseboards', 'Closets', 
+                                   'Cabinet Doors', 'Cabinet Drawers', 'Spindles'];
+        
+        const INTERIOR_ROOMS = ['Living Room', 'Dining Room', 'Kitchen', 'Family Room', 'Master Bedroom',
+                               'Bedroom 2', 'Bedroom 3', 'Bedroom 4', 'Bathroom 1', 'Bathroom 2',
+                               'Hallway', 'Basement', 'Laundry Room', 'Office'];
+        
+        const EXTERIOR_SIDES = ['Front', 'Back', 'Left', 'Right'];
+
+        // Authentication
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentUser = user;
+                initializeAppData();
+            } else {
+                showLoginScreen();
+            }
+        });
+
+        function showLoginScreen() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = 'northern-star-' + email.replace(/[^a-zA-Z0-9]/g, '');
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                if (error.code === 'auth/invalid-credential' || 
+                    error.code === 'auth/user-not-found' || 
+                    error.code === 'auth/wrong-password') {
+                    try {
+                        await createUserWithEmailAndPassword(auth, email, password);
+                    } catch (createError) {
+                        alert('Error creating account: ' + createError.message);
+                    }
+                } else {
+                    alert('Error signing in: ' + error.message);
+                }
+            }
+        }
+
+        window.logout = async function() {
+            if (confirm('Sign out?')) {
+                await signOut(auth);
+            }
+        };
+
+        window.handleLogin = handleLogin;
+
+        // Initialize app data
+        async function initializeAppData() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('hidden');
+            
+            await loadPriceSettings();
+            await loadCompanySettings();
+            await loadContractTerms();
+            await loadDefaultProducts();
+            await loadCustomers();
+            await loadProducts();
+            await loadProfiles();
+            await loadJobs();
+        }
+
+        // Screen navigation
+        window.showScreen = function(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            // Load pricing settings when price settings screen is shown
+            if (screenId === 'priceSettingsScreen') {
+                displayPricingSettings();
+            }
+        };
+
+        // Switch pricing tabs
+        window.switchPricingTab = function(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.pricing-tab').forEach(btn => {
+                btn.style.borderBottom = '3px solid transparent';
+                btn.style.color = '#666';
+                btn.style.fontWeight = 'normal';
+            });
+            
+            // Hide all panels
+            document.querySelectorAll('.pricing-panel').forEach(panel => panel.classList.add('hidden'));
+            
+            // Activate selected tab
+            if (tab === 'global') {
+                document.getElementById('globalPricingTab').style.borderBottom = '3px solid #667eea';
+                document.getElementById('globalPricingTab').style.color = '#667eea';
+                document.getElementById('globalPricingTab').style.fontWeight = 'bold';
+                document.getElementById('globalPricingPanel').classList.remove('hidden');
+            } else if (tab === 'exterior') {
+                document.getElementById('exteriorPricingTab').style.borderBottom = '3px solid #667eea';
+                document.getElementById('exteriorPricingTab').style.color = '#667eea';
+                document.getElementById('exteriorPricingTab').style.fontWeight = 'bold';
+                document.getElementById('exteriorPricingPanel').classList.remove('hidden');
+            } else if (tab === 'interior') {
+                document.getElementById('interiorPricingTab').style.borderBottom = '3px solid #667eea';
+                document.getElementById('interiorPricingTab').style.color = '#667eea';
+                document.getElementById('interiorPricingTab').style.fontWeight = 'bold';
+                document.getElementById('interiorPricingPanel').classList.remove('hidden');
+            }
+        };
+
+        // Display pricing settings
+        function displayPricingSettings() {
+            // Populate global rates with current defaults
+            document.getElementById('globalLaborRate').value = PRICING.LaborRate || '';
+            document.getElementById('exteriorPaintPrice').value = PRICING.PaintPricePerGallon || '';
+            document.getElementById('interiorPaintPrice').value = PRICING.InteriorPaintPricePerGallon || '';
+            
+            // Display exterior surfaces
+            displayExteriorSurfaces();
+            
+            // Display interior surfaces
+            displayInteriorSurfaces();
+        }
+
+        function displayExteriorSurfaces() {
+            const container = document.getElementById('exteriorSurfacesList');
+            
+            const surfaces = [
+                { name: 'Siding', laborKey: 'SidingLaborRate', coverageKey: 'SidingPaintCoverage', unit: 'sq ft/hour' },
+                { name: 'Soffit', laborKey: 'SoffitLaborRate', coverageKey: 'SoffitPaintCoverage', unit: 'sq ft/hour' },
+                { name: 'Fascia', laborKey: 'FasciaLaborRate', coverageKey: 'FasciaPaintCoverage', unit: 'sq ft/hour' },
+                { name: 'Windows', laborKey: 'WindowLaborRate', coverageKey: 'WindowPaintCoverage', unit: 'sq ft/hour' },
+                { name: 'Doors', laborKey: 'DoorLaborHours', coverageKey: 'DoorPaintCoverage', unit: 'hours/door' },
+                { name: 'Bay Windows', laborKey: 'BayWindowLaborHours', unit: 'hours each' },
+                { name: 'Railings', laborKey: 'RailingLaborHours', coverageKey: 'RailingPaintCost', unit: 'hours each' }
+            ];
+            
+            let html = '';
+            surfaces.forEach(surface => {
+                html += '<div style="border:1px solid #ddd;padding:15px;margin-bottom:10px;border-radius:6px;background:#fff;">';
+                html += '<h4 style="color:#003d7a;margin-bottom:10px;">' + surface.name + '</h4>';
+                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+                html += '<div>';
+                html += '<label style="font-size:10pt;color:#666;">Labor Rate (' + surface.unit + ')</label>';
+                html += '<input type="number" id="' + surface.laborKey + '" value="' + (PRICING[surface.laborKey] || '') + '" step="0.01" min="0" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;background:#fff;">';
+                html += '</div>';
+                if (surface.coverageKey) {
+                    html += '<div>';
+                    html += '<label style="font-size:10pt;color:#666;">Spread Rate (sq ft/gal)</label>';
+                    html += '<input type="number" id="' + surface.coverageKey + '" value="' + (PRICING[surface.coverageKey] || '') + '" step="1" min="0" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;background:#fff;">';
+                    html += '</div>';
+                } else {
+                    html += '<div></div>';
+                }
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function displayInteriorSurfaces() {
+            const container = document.getElementById('interiorSurfacesList');
+            
+            const surfaces = [
+                { name: 'Walls', laborKey: 'WallCeilingLaborRate', coverageKey: 'WallCeilingPaintCoverage', unit: 'sq ft/hour' },
+                { name: 'Ceiling', laborKey: 'WallCeilingLaborRate', coverageKey: 'WallCeilingPaintCoverage', unit: 'sq ft/hour' },
+                { name: 'Doors', laborKey: 'InteriorDoorLaborHours', coverageKey: 'InteriorDoorPaintCoverage', unit: 'hours/door' },
+                { name: 'Windows', laborKey: 'InteriorWindowLaborRate', coverageKey: 'InteriorWindowPaintCoverage', unit: 'sq ft/hour' },
+                { name: 'Baseboards', laborKey: 'BaseboardLaborRate', coverageKey: 'BaseboardPaintCoverage', unit: 'linear ft/hour' },
+                { name: 'Closets', laborKey: 'ClosetFlatRate', unit: '$ flat rate' },
+                { name: 'Cabinet Doors', laborKey: 'CabinetDoorPrice', unit: '$ per door' },
+                { name: 'Cabinet Drawers', laborKey: 'CabinetDrawerPrice', unit: '$ per drawer' },
+                { name: 'Spindles', laborKey: 'SpindlePricePerCoat', unit: '$ per spindle/coat' }
+            ];
+            
+            let html = '';
+            surfaces.forEach(surface => {
+                html += '<div style="border:1px solid #ddd;padding:15px;margin-bottom:10px;border-radius:6px;background:#fff;">';
+                html += '<h4 style="color:#003d7a;margin-bottom:10px;">' + surface.name + '</h4>';
+                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+                html += '<div>';
+                html += '<label style="font-size:10pt;color:#666;">' + (surface.unit.includes('$') ? 'Price' : 'Labor Rate') + ' (' + surface.unit + ')</label>';
+                html += '<input type="number" id="' + surface.laborKey + '" value="' + (PRICING[surface.laborKey] || '') + '" step="0.01" min="0" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;background:#fff;">';
+                html += '</div>';
+                if (surface.coverageKey) {
+                    html += '<div>';
+                    html += '<label style="font-size:10pt;color:#666;">Spread Rate (sq ft/gal)</label>';
+                    html += '<input type="number" id="' + surface.coverageKey + '" value="' + (PRICING[surface.coverageKey] || '') + '" step="1" min="0" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;background:#fff;">';
+                    html += '</div>';
+                } else {
+                    html += '<div></div>';
+                }
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Price Settings - Save to Firebase
+        async function savePriceSettings() {
+            try {
+                const pricingData = {
+                    userId: currentUser.uid,
+                    // Global rates
+                    LaborRate: parseFloat(document.getElementById('globalLaborRate').value) || PRICING.LaborRate,
+                    PaintPricePerGallon: parseFloat(document.getElementById('exteriorPaintPrice').value) || PRICING.PaintPricePerGallon,
+                    InteriorPaintPricePerGallon: parseFloat(document.getElementById('interiorPaintPrice').value) || PRICING.InteriorPaintPricePerGallon,
+                    
+                    // Exterior surfaces
+                    SidingLaborRate: parseFloat(document.getElementById('SidingLaborRate').value) || PRICING.SidingLaborRate,
+                    SidingPaintCoverage: parseFloat(document.getElementById('SidingPaintCoverage').value) || PRICING.SidingPaintCoverage,
+                    SoffitLaborRate: parseFloat(document.getElementById('SoffitLaborRate').value) || PRICING.SoffitLaborRate,
+                    SoffitPaintCoverage: parseFloat(document.getElementById('SoffitPaintCoverage').value) || PRICING.SoffitPaintCoverage,
+                    FasciaLaborRate: parseFloat(document.getElementById('FasciaLaborRate').value) || PRICING.FasciaLaborRate,
+                    FasciaPaintCoverage: parseFloat(document.getElementById('FasciaPaintCoverage').value) || PRICING.FasciaPaintCoverage,
+                    WindowLaborRate: parseFloat(document.getElementById('WindowLaborRate').value) || PRICING.WindowLaborRate,
+                    WindowPaintCoverage: parseFloat(document.getElementById('WindowPaintCoverage').value) || PRICING.WindowPaintCoverage,
+                    DoorLaborHours: parseFloat(document.getElementById('DoorLaborHours').value) || PRICING.DoorLaborHours,
+                    DoorPaintCoverage: parseFloat(document.getElementById('DoorPaintCoverage').value) || PRICING.DoorPaintCoverage,
+                    BayWindowLaborHours: parseFloat(document.getElementById('BayWindowLaborHours').value) || PRICING.BayWindowLaborHours,
+                    RailingLaborHours: parseFloat(document.getElementById('RailingLaborHours').value) || PRICING.RailingLaborHours,
+                    RailingPaintCost: parseFloat(document.getElementById('RailingPaintCost').value) || PRICING.RailingPaintCost,
+                    
+                    // Interior surfaces
+                    WallCeilingLaborRate: parseFloat(document.getElementById('WallCeilingLaborRate').value) || PRICING.WallCeilingLaborRate,
+                    WallCeilingPaintCoverage: parseFloat(document.getElementById('WallCeilingPaintCoverage').value) || PRICING.WallCeilingPaintCoverage,
+                    InteriorDoorLaborHours: parseFloat(document.getElementById('InteriorDoorLaborHours').value) || PRICING.InteriorDoorLaborHours,
+                    InteriorDoorPaintCoverage: parseFloat(document.getElementById('InteriorDoorPaintCoverage').value) || PRICING.InteriorDoorPaintCoverage,
+                    InteriorWindowLaborRate: parseFloat(document.getElementById('InteriorWindowLaborRate').value) || PRICING.InteriorWindowLaborRate,
+                    InteriorWindowPaintCoverage: parseFloat(document.getElementById('InteriorWindowPaintCoverage').value) || PRICING.InteriorWindowPaintCoverage,
+                    BaseboardLaborRate: parseFloat(document.getElementById('BaseboardLaborRate').value) || PRICING.BaseboardLaborRate,
+                    BaseboardPaintCoverage: parseFloat(document.getElementById('BaseboardPaintCoverage').value) || PRICING.BaseboardPaintCoverage,
+                    ClosetFlatRate: parseFloat(document.getElementById('ClosetFlatRate').value) || PRICING.ClosetFlatRate,
+                    CabinetDoorPrice: parseFloat(document.getElementById('CabinetDoorPrice').value) || PRICING.CabinetDoorPrice,
+                    CabinetDrawerPrice: parseFloat(document.getElementById('CabinetDrawerPrice').value) || PRICING.CabinetDrawerPrice,
+                    SpindlePricePerCoat: parseFloat(document.getElementById('SpindlePricePerCoat').value) || PRICING.SpindlePricePerCoat,
+                    
+                    updatedAt: new Date().toISOString()
+                };
+                
+                // Save to Firebase
+                const pricingQuery = query(collection(db, 'pricingSettings'), where('userId', '==', currentUser.uid));
+                const pricingDocs = await getDocs(pricingQuery);
+                
+                if (pricingDocs.empty) {
+                    await addDoc(collection(db, 'pricingSettings'), pricingData);
+                } else {
+                    await updateDoc(pricingDocs.docs[0].ref, pricingData);
+                }
+                
+                // Update global PRICING object
+                Object.assign(PRICING, pricingData);
+                
+                alert('✅ Price settings saved successfully!');
+            } catch (error) {
+                console.error('Error saving price settings:', error);
+                alert('❌ Error saving price settings. Please try again.');
+            }
+        }
+
+        // Load saved pricing from Firebase
+        async function loadPriceSettings() {
+            try {
+                const pricingQuery = query(collection(db, 'pricingSettings'), where('userId', '==', currentUser.uid));
+                const pricingDocs = await getDocs(pricingQuery);
+                
+                if (!pricingDocs.empty) {
+                    const savedPricing = pricingDocs.docs[0].data();
+                    // Update global PRICING with saved values
+                    Object.assign(PRICING, savedPricing);
+                }
+            } catch (error) {
+                console.error('Error loading price settings:', error);
+            }
+        }
+
+        // Company Settings
+        async function loadCompanySettings() {
+            try {
+                const settingsDoc = await getDocs(query(collection(db, 'settings'), where('userId', '==', currentUser.uid)));
+                if (!settingsDoc.empty) {
+                    window.companySettings = settingsDoc.docs[0].data();
+                    document.getElementById('companyName').value = companySettings.companyName || 'Northern Star Painters';
+                    document.getElementById('companyAddress').value = companySettings.companyAddress || '';
+                    document.getElementById('companyPhone').value = companySettings.companyPhone || '';
+                    document.getElementById('companyEmail').value = companySettings.companyEmail || '';
+                    document.getElementById('companyWebsite').value = companySettings.companyWebsite || '';
+                    document.getElementById('consultantName').value = companySettings.consultantName || '';
+                    document.getElementById('consultantTitle').value = companySettings.consultantTitle || '';
+                    document.getElementById('consultantPhone').value = companySettings.consultantPhone || '';
+                    document.getElementById('consultantEmail').value = companySettings.consultantEmail || '';
+                    
+                    if (companySettings.logoUrl) {
+                        document.getElementById('logoPreview').src = companySettings.logoUrl;
+                        document.getElementById('logoPreview').classList.remove('hidden');
+                    }
+                    if (companySettings.consultantPhotoUrl) {
+                        document.getElementById('consultantPhotoPreview').src = companySettings.consultantPhotoUrl;
+                        document.getElementById('consultantPhotoPreview').classList.remove('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        window.saveCompanySettings = async function() {
+            const settings = {
+                userId: currentUser.uid,
+                companyName: document.getElementById('companyName').value,
+                companyAddress: document.getElementById('companyAddress').value,
+                companyPhone: document.getElementById('companyPhone').value,
+                companyEmail: document.getElementById('companyEmail').value,
+                companyWebsite: document.getElementById('companyWebsite').value,
+                consultantName: document.getElementById('consultantName').value,
+                consultantTitle: document.getElementById('consultantTitle').value,
+                consultantPhone: document.getElementById('consultantPhone').value,
+                consultantEmail: document.getElementById('consultantEmail').value,
+                logoUrl: companySettings?.logoUrl || '',
+                consultantPhotoUrl: companySettings?.consultantPhotoUrl || ''
+            };
+
+            try {
+                const settingsDoc = await getDocs(query(collection(db, 'settings'), where('userId', '==', currentUser.uid)));
+                if (settingsDoc.empty) {
+                    await addDoc(collection(db, 'settings'), settings);
+                } else {
+                    await updateDoc(doc(db, 'settings', settingsDoc.docs[0].id), settings);
+                }
+                window.companySettings = settings;
+                alert('Settings saved!');
+                showScreen('homeScreen');
+            } catch (error) {
+                alert('Error saving settings: ' + error.message);
+            }
+        };
+
+        // Photo compression helper
+        async function compressImage(file, maxWidth = 800, quality = 0.7) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        window.handleLogoUpload = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const compressed = await compressImage(file, 400, 0.8);
+            const storageRef = ref(storage, `logos/${currentUser.uid}/logo.jpg`);
+            await uploadBytes(storageRef, compressed);
+            const url = await getDownloadURL(storageRef);
+            
+            if (!companySettings) companySettings = {};
+            companySettings.logoUrl = url;
+            
+            document.getElementById('logoPreview').src = url;
+            document.getElementById('logoPreview').classList.remove('hidden');
+        };
+
+        window.handleConsultantPhotoUpload = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const compressed = await compressImage(file, 400, 0.8);
+            const storageRef = ref(storage, `consultant/${currentUser.uid}/photo.jpg`);
+            await uploadBytes(storageRef, compressed);
+            const url = await getDownloadURL(storageRef);
+            
+            if (!companySettings) companySettings = {};
+            companySettings.consultantPhotoUrl = url;
+            
+            document.getElementById('consultantPhotoPreview').src = url;
+            document.getElementById('consultantPhotoPreview').classList.remove('hidden');
+        };
+
+        // Contract Editor Functions
+        window.switchContractTab = function(type) {
+            // Update tab buttons
+            if (type === 'interior') {
+                document.getElementById('interiorContractTab').style.borderBottom = '3px solid #667eea';
+                document.getElementById('interiorContractTab').style.color = '#667eea';
+                document.getElementById('interiorContractTab').style.fontWeight = 'bold';
+                document.getElementById('exteriorContractTab').style.borderBottom = '3px solid transparent';
+                document.getElementById('exteriorContractTab').style.color = '#666';
+                document.getElementById('exteriorContractTab').style.fontWeight = 'normal';
+                
+                document.getElementById('interiorContractEditor').classList.remove('hidden');
+                document.getElementById('exteriorContractEditor').classList.add('hidden');
+            } else {
+                document.getElementById('exteriorContractTab').style.borderBottom = '3px solid #667eea';
+                document.getElementById('exteriorContractTab').style.color = '#667eea';
+                document.getElementById('exteriorContractTab').style.fontWeight = 'bold';
+                document.getElementById('interiorContractTab').style.borderBottom = '3px solid transparent';
+                document.getElementById('interiorContractTab').style.color = '#666';
+                document.getElementById('interiorContractTab').style.fontWeight = 'normal';
+                
+                document.getElementById('exteriorContractEditor').classList.remove('hidden');
+                document.getElementById('interiorContractEditor').classList.add('hidden');
+            }
+        };
+
+        async function loadContractTerms() {
+            try {
+                const contractDoc = await getDocs(query(collection(db, 'contractTerms'), where('userId', '==', currentUser.uid)));
+                if (!contractDoc.empty) {
+                    window.contractTerms = contractDoc.docs[0].data();
+                    document.getElementById('interiorContractText').value = contractTerms.interiorContract || getDefaultInteriorContract();
+                    document.getElementById('exteriorContractText').value = contractTerms.exteriorContract || getDefaultExteriorContract();
+                } else {
+                    // Pre-populate with default contracts
+                    document.getElementById('interiorContractText').value = getDefaultInteriorContract();
+                    document.getElementById('exteriorContractText').value = getDefaultExteriorContract();
+                }
+            } catch (error) {
+                console.error('Error loading contract terms:', error);
+                // Pre-populate with defaults on error
+                document.getElementById('interiorContractText').value = getDefaultInteriorContract();
+                document.getElementById('exteriorContractText').value = getDefaultExteriorContract();
+            }
+        }
+
+        window.saveContractTerms = async function() {
+            const contractTermsData = {
+                userId: currentUser.uid,
+                interiorContract: document.getElementById('interiorContractText').value,
+                exteriorContract: document.getElementById('exteriorContractText').value
+            };
+
+            try {
+                const contractDoc = await getDocs(query(collection(db, 'contractTerms'), where('userId', '==', currentUser.uid)));
+                if (contractDoc.empty) {
+                    await addDoc(collection(db, 'contractTerms'), contractTermsData);
+                } else {
+                    await updateDoc(doc(db, 'contractTerms', contractDoc.docs[0].id), contractTermsData);
+                }
+                window.contractTerms = contractTermsData; // Update cached version
+                alert('Contract terms saved successfully!');
+            } catch (error) {
+                alert('Error saving contract terms: ' + error.message);
+            }
+        };
+
+        function getDefaultInteriorContract() {
+            return `SET-UP
+
+**Customer Responsibilities:**
+- Ensure clear access to work areas
+- Remove all paintings, pictures, and wall decorations
+- Remove small and fragile items
+- Take down wall-mounted electronics (e.g., TV)
+
+**Northern Star Painters Will Cover & Protect:**
+- Bathroom fixtures and vanity
+- Cabinets
+- Fixtures
+- Floors
+- Furniture
+- Surfaces not intended for painting
+
+INSURANCE
+
+General Liability: $1,000,000
+Worker Comp: $1,000,000
+
+NAIL HOLES
+
+If you wish to rehang a frame in the same location all you have to do is leave the hanger or nail in place. Otherwise remove the nail or hanger and we will repair the hole.
+
+CARPENTRY
+
+For any interior carpentry work involving the installation of new trim, the charge is $18 per linear foot for labor, plus the cost of materials with a 30% markup for handling. A change order will be drafted to outline the scope of work, detailing the costs of both labor and materials, and will be presented for approval before any interior carpentry begins. Work will not commence without prior written consent.
+
+ACCENT WALLS
+
+If a customer decides to add an accent wall anytime after receipt of this proposal, an extra fee of $160 per Accent Wall will be added to the total, to cover the additional labor and materials required.
+
+CHOOSING COLORS
+
+To ensure complete, uniform coverage with color or sheen alterations, it's essential to apply two layers of paint.
+
+**Please note:**
+Certain colors, like pure white, some yellows, reds, and deep tones, may necessitate three or more coats to achieve the desired fullness and depth of color, which could lead to additional charges since our usual quotes cover up to two coats. For color selection, please visit your nearest Benjamin Moore or Sherwin Williams store and provide us with the chosen color name, number, and desired finish. To ensure a smooth process without delays, please communicate your color choices to us at least 5 days before the scheduled start of your project.`;
+        }
+
+        function getDefaultExteriorContract() {
+            return `SET-UP
+
+**Northern Star Painting will cover & protect:**
+- Driveway
+- Flower beds
+- Walkway
+
+**Included in the Set-Up:**
+All items listed above are included. Any services not listed are not included in the price.
+
+PAINT COLOR SELECTION
+
+To ensure complete, uniform coverage with color or sheen alterations, it's essential to apply two layers of paint.
+
+**Please note:**
+Certain colors, like pure white, some yellows, reds, and deep tones, may necessitate three or more coats to achieve the desired fullness and depth of color, which could lead to additional charges since our usual quotes cover up to two coats. For color selection, please visit your nearest Benjamin Moore or Sherwin Williams store and provide us with the chosen color name, number, and desired finish. To ensure a smooth process without delays, please communicate your color choices to us at least 5 days before the scheduled start of your project.
+
+PREPARATION
+
+**Northern Star Painting will prepare the surfaces for painting by:**
+- Sealing previously caulked gaps and cracks for painting areas.
+- Removing loose and peeling paint.
+
+POWER-WASH
+
+Before painting, we power wash your home to remove dirt, algae, mildew, and any weakened or damaged wood fibers, ensuring the new paint adheres correctly. Post-wash, loose paint may result in chips scattered around the property, which we'll clear once dry. It's challenging to completely remove all small chips from grass and flower beds, but we'll make every effort to clean up as much as possible, though some remnants may remain. Please note, power washing may not remove oxidation stains from gutters and downspouts, and it could leave a residue on windows. We recommend arranging for window cleaning after the paint job to ensure a spotless finish.
+
+CARPENTRY
+
+Exterior carpentry work is priced as follows: $22.50 per linear foot for wood replacement, and $27.50 per linear foot when using PVC. Window sill replacements are set at a flat rate of $225.00 per sill. For repairs involving Bondo patches rather than full replacements, the cost is $65.00 per hour, plus the cost of materials. This rate covers all steps necessary to prepare the surface for painting, such as priming, caulking, or puttying.
+
+We're grateful at Northern Star Painting for the chance to submit our proposal for your project. Expect regular updates as we aim to give you an outstanding painting experience from beginning to end.`;
+        }
+
+        // Default Products
+        async function loadDefaultProducts() {
+            const productsSnapshot = await getDocs(query(collection(db, 'products'), where('userId', '==', currentUser.uid)));
+            if (productsSnapshot.empty) {
+                const defaultProducts = [
+                    {userId: currentUser.uid, name:'Regal Select', brand:'Benjamin Moore', sheen:'Soft Gloss', type:'Exterior'},
+                    {userId: currentUser.uid, name:'Regal Select', brand:'Benjamin Moore', sheen:'Semi-Gloss', type:'Exterior'},
+                    {userId: currentUser.uid, name:'Ben Exterior', brand:'Benjamin Moore', sheen:'Soft Gloss', type:'Exterior'},
+                    {userId: currentUser.uid, name:'Regal Select', brand:'Benjamin Moore', sheen:'Matte', type:'Interior'},
+                    {userId: currentUser.uid, name:'Regal Select', brand:'Benjamin Moore', sheen:'Flat', type:'Interior'},
+                    {userId: currentUser.uid, name:'Ben', brand:'Benjamin Moore', sheen:'Matte', type:'Interior'},
+                    {userId: currentUser.uid, name:'Ben', brand:'Benjamin Moore', sheen:'Flat', type:'Interior'},
+                    {userId: currentUser.uid, name:'Advance', brand:'Benjamin Moore', sheen:'Semi-Gloss', type:'Interior'},
+                    {userId: currentUser.uid, name:'Duration', brand:'Sherwin Williams', sheen:'Soft Gloss', type:'Exterior'},
+                    {userId: currentUser.uid, name:'Emerald', brand:'Sherwin Williams', sheen:'Semi-Gloss', type:'Exterior'},
+                    {userId: currentUser.uid, name:'SuperPaint', brand:'Sherwin Williams', sheen:'Soft Gloss', type:'Exterior'},
+                    {userId: currentUser.uid, name:'Emerald', brand:'Sherwin Williams', sheen:'Matte', type:'Interior'},
+                    {userId: currentUser.uid, name:'Duration', brand:'Sherwin Williams', sheen:'Flat', type:'Interior'},
+                    {userId: currentUser.uid, name:'ProClassic', brand:'Sherwin Williams', sheen:'Semi-Gloss', type:'Interior'},
+                ];
+                for (const product of defaultProducts) {
+                    await addDoc(collection(db, 'products'), product);
+                }
+            }
+        }
+
+        // Customers
+        async function loadCustomers() {
+            const snapshot = await getDocs(query(collection(db, 'customers'), where('userId', '==', currentUser.uid)));
+            window.customers = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+            displayCustomerList();
+        }
+
+        function displayCustomerList() {
+            const list = document.getElementById('customerList');
+            if (customers.length === 0) {
+                list.innerHTML = '<p style="color:#999;text-align:center;padding:40px">No customers yet.</p>';
+                return;
+            }
+            list.innerHTML = customers.map(c => {
+                const customerJobs = jobs.filter(j => j.customerId === c.id);
+                const jobCount = customerJobs.length;
+                const totalValue = customerJobs.reduce((sum, j) => sum + (j.grandTotal || 0), 0);
+                
+                return `
+                <div class="selection-card" onclick="viewCustomerDetail('${c.id}')" style="cursor:pointer;">
+                    <h3>${c.name}</h3>
+                    <p>${c.email || ''} ${c.phone || ''}</p>
+                    <p style="font-size:12px;color:#666;">${c.address || ''}</p>
+                    <p style="margin-top:10px;font-size:14px;color:#667eea;"><strong>${jobCount} estimate${jobCount !== 1 ? 's' : ''}</strong> • <strong>$${totalValue.toFixed(2)}</strong> total value</p>
+                </div>
+            `;
+            }).join('');
+        }
+
+        window.viewCustomerDetail = function(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) return;
+            
+            const customerJobs = jobs.filter(j => j.customerId === customerId);
+            
+            // Display customer detail screen
+            let html = `
+                <div class="room-card">
+                    <h2>${customer.name}</h2>
+                    <p>${customer.email || ''} ${customer.phone || ''}</p>
+                    <p style="color:#666;">${customer.address || ''}</p>
+                </div>
+                
+                <h3 style="margin:20px 0 15px 0;">All Estimates (${customerJobs.length})</h3>
+            `;
+            
+            if (customerJobs.length === 0) {
+                html += '<p style="color:#999;text-align:center;padding:40px;">No estimates yet for this customer.</p>';
+            } else {
+                html += customerJobs.map(job => `
+                    <div class="room-card">
+                        <h3>${job.jobName}</h3>
+                        <p>${job.jobType} • ${new Date(job.date).toLocaleDateString()}</p>
+                        <p style="font-size:24px;color:#667eea;font-weight:600;margin:10px 0;">$${job.grandTotal.toFixed(2)}</p>
+                        <div style="display:flex;gap:10px;margin-top:15px;">
+                            <button class="btn btn-primary btn-small" onclick="viewJob('${job.id}')">👁️ View</button>
+                            <button class="btn btn-warning btn-small" onclick="regenerateProposal('${job.id}')">📄 PDF</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            html += `
+                <div style="margin-top:20px;">
+                    <button class="btn btn-success" onclick="createNewEstimateForCustomer('${customerId}')">➕ New Estimate for ${customer.name}</button>
+                    <button class="btn btn-secondary" onclick="showScreen('customersScreen')">← Back to Customers</button>
+                </div>
+            `;
+            
+            // Show in a custom screen
+            const detailScreen = document.getElementById('customerDetailScreen');
+            if (!detailScreen) {
+                // Create screen if it doesn't exist
+                const screen = document.createElement('div');
+                screen.id = 'customerDetailScreen';
+                screen.className = 'screen';
+                document.getElementById('appContainer').appendChild(screen);
+            }
+            document.getElementById('customerDetailScreen').innerHTML = html;
+            showScreen('customerDetailScreen');
+        };
+
+        window.createNewEstimateForCustomer = function(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) return;
+            
+            // Start new estimate for this customer
+            currentEstimate = {
+                customerId: customer.id,
+                customerName: customer.name,
+                jobName: '',
+                jobType: '',
+                profileId: null,
+                rooms: [],
+                totalLabor: 0,
+                totalMaterials: 0,
+                grandTotal: 0
+            };
+            
+            showScreen('estimateStep1Screen');
+        };
+
+        window.saveCustomer = async function(event) {
+            event.preventDefault();
+            const customer = {
+                userId: currentUser.uid,
+                name: document.getElementById('customerName').value,
+                email: document.getElementById('customerEmail').value,
+                phone: document.getElementById('customerPhone').value,
+                address: document.getElementById('customerAddress').value
+            };
+            await addDoc(collection(db, 'customers'), customer);
+            document.getElementById('customerForm').reset();
+            await loadCustomers();
+            showScreen('estimateStep1Screen');
+        };
+
+        // Products
+        async function loadProducts() {
+            const snapshot = await getDocs(query(collection(db, 'products'), where('userId', '==', currentUser.uid)));
+            window.products = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+            displayProductList();
+        }
+
+        function displayProductList() {
+            const list = document.getElementById('productList');
+            if (products.length === 0) {
+                list.innerHTML = '<p style="color:#999;text-align:center;padding:40px">No products yet.</p>';
+                return;
+            }
+            
+            list.innerHTML = products.map(p => `
+                <div class="selection-card">
+                    <h3>${p.name}</h3>
+                    <p><strong>${p.brand}</strong> • ${p.sheen} • ${p.type}</p>
+                    <div style="margin-top:10px;">
+                        <button class="btn btn-primary btn-small" onclick="editProduct('${p.id}')">✏️ Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteProduct('${p.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.saveProduct = async function(event) {
+            event.preventDefault();
+            const product = {
+                userId: currentUser.uid,
+                name: document.getElementById('productName').value,
+                brand: document.getElementById('productBrand').value,
+                sheen: document.getElementById('productSheen').value,
+                type: document.getElementById('productType').value
+            };
+            
+            if (editingProductId) {
+                await updateDoc(doc(db, 'products', editingProductId), product);
+            } else {
+                await addDoc(collection(db, 'products'), product);
+            }
+            
+            editingProductId = null;
+            document.getElementById('productForm').reset();
+            await loadProducts();
+            showScreen('productsScreen');
+        };
+
+        window.editProduct = function(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            
+            editingProductId = id;
+            document.getElementById('productFormTitle').textContent = 'Edit Product';
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productBrand').value = product.brand;
+            document.getElementById('productSheen').value = product.sheen;
+            document.getElementById('productType').value = product.type;
+            showScreen('newProductScreen');
+        };
+
+        window.deleteProduct = async function(id) {
+            if (!confirm('Delete this product?')) return;
+            await deleteDoc(doc(db, 'products', id));
+            await loadProducts();
+        };
+
+        window.cancelProductEdit = function() {
+            editingProductId = null;
+            document.getElementById('productForm').reset();
+            document.getElementById('productFormTitle').textContent = 'New Product';
+            showScreen('productsScreen');
+        };
+
+        // Profiles
+        async function loadProfiles() {
+            const snapshot = await getDocs(query(collection(db, 'profiles'), where('userId', '==', currentUser.uid)));
+            window.profiles = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+            displayProfileList();
+        }
+
+        function displayProfileList() {
+            const list = document.getElementById('profileList');
+            if (profiles.length === 0) {
+                list.innerHTML = '<p style="color:#999;text-align:center;padding:40px">No profiles yet.</p>';
+                return;
+            }
+            
+            list.innerHTML = profiles.map(p => `
+                <div class="selection-card">
+                    <h3>${p.name}</h3>
+                    <p><strong>${p.type}</strong> • ${Object.keys(p.surfaceMapping || {}).length} surfaces configured</p>
+                    <div style="margin-top:10px;">
+                        <button class="btn btn-primary btn-small" onclick="editProfile('${p.id}')">✏️ Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteProfile('${p.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.updateProfileSurfaces = function() {
+            const type = document.getElementById('profileType').value;
+            if (!type) {
+                document.getElementById('profileSurfacesSection').classList.add('hidden');
+                document.getElementById('profileSaveButtons').classList.add('hidden');
+                return;
+            }
+            
+            document.getElementById('profileSurfacesSection').classList.remove('hidden');
+            document.getElementById('profileSaveButtons').classList.remove('hidden');
+            
+            const surfaces = type === 'Exterior' ? EXTERIOR_SURFACES : INTERIOR_SURFACES;
+            const availableProducts = products.filter(p => p.type === type || p.type === 'Both');
+            
+            const surfacesList = document.getElementById('profileSurfacesList');
+            surfacesList.innerHTML = surfaces.map(surface => `
+                <div class="room-card" style="margin-bottom:10px;">
+                    <h4 style="margin-bottom:8px;">${surface}</h4>
+                    <select id="surface_${surface.replace(/\s+/g, '_')}" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:8px;">
+                        <option value="">-- Select Product --</option>
+                        ${availableProducts.map(p => `<option value="${p.id}">${p.brand} - ${p.name} - ${p.sheen}</option>`).join('')}
+                    </select>
+                </div>
+            `).join('');
+        };
+
+        window.saveProfile = async function(event) {
+            event.preventDefault();
+            const type = document.getElementById('profileType').value;
+            const surfaces = type === 'Exterior' ? EXTERIOR_SURFACES : INTERIOR_SURFACES;
+            
+            const surfaceMapping = {};
+            surfaces.forEach(surface => {
+                const productId = document.getElementById(`surface_${surface.replace(/\s+/g, '_')}`).value;
+                if (productId) {
+                    surfaceMapping[surface] = productId;
+                }
+            });
+            
+            const profile = {
+                userId: currentUser.uid,
+                name: document.getElementById('profileName').value,
+                type: type,
+                surfaceMapping: surfaceMapping
+            };
+            
+            if (editingProfileId) {
+                await updateDoc(doc(db, 'profiles', editingProfileId), profile);
+            } else {
+                await addDoc(collection(db, 'profiles'), profile);
+            }
+            
+            editingProfileId = null;
+            document.getElementById('profileForm').reset();
+            await loadProfiles();
+            showScreen('profilesScreen');
+        };
+
+        window.editProfile = function(id) {
+            const profile = profiles.find(p => p.id === id);
+            if (!profile) return;
+            
+            editingProfileId = id;
+            document.getElementById('profileFormTitle').textContent = 'Edit Profile';
+            document.getElementById('profileName').value = profile.name;
+            document.getElementById('profileType').value = profile.type;
+            
+            updateProfileSurfaces();
+            
+            setTimeout(() => {
+                Object.entries(profile.surfaceMapping || {}).forEach(([surface, productId]) => {
+                    const select = document.getElementById(`surface_${surface.replace(/\s+/g, '_')}`);
+                    if (select) select.value = productId;
+                });
+            }, 100);
+            
+            showScreen('newProfileScreen');
+        };
+
+        window.deleteProfile = async function(id) {
+            if (!confirm('Delete this profile?')) return;
+            await deleteDoc(doc(db, 'profiles', id));
+            await loadProfiles();
+        };
+
+        window.cancelProfileEdit = function() {
+            editingProfileId = null;
+            document.getElementById('profileForm').reset();
+            document.getElementById('profileFormTitle').textContent = 'New Profile';
+            document.getElementById('profileSurfacesSection').classList.add('hidden');
+            document.getElementById('profileSaveButtons').classList.add('hidden');
+            showScreen('profilesScreen');
+        };
+
+        // Jobs
+        async function loadJobs() {
+            const snapshot = await getDocs(query(collection(db, 'jobs'), where('userId', '==', currentUser.uid)));
+            window.jobs = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+            displayJobList();
+        }
+
+        function displayJobList() {
+            const list = document.getElementById('jobList');
+            if (jobs.length === 0) {
+                list.innerHTML = '<p style="color:#999;text-align:center;padding:40px">No jobs yet.</p>';
+                return;
+            }
+            list.innerHTML = jobs.map(job => `
+                <div class="room-card">
+                    <h3>${job.jobName}</h3>
+                    <p>${job.customerName} • ${job.jobType} • ${new Date(job.date).toLocaleDateString()}</p>
+                    <p style="font-size:24px;color:#667eea;font-weight:600;margin:10px 0;">$${job.grandTotal.toFixed(2)}</p>
+                    <div style="display:flex;gap:10px;margin-top:15px;">
+                        <button class="btn btn-primary btn-small" onclick="viewJob('${job.id}')">👁️ View</button>
+                        <button class="btn btn-warning btn-small" onclick="regenerateProposal('${job.id}')">📄 PDF</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.viewJob = function(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+            
+            // Load job data into currentEstimate
+            currentEstimate = {
+                customerId: job.customerId,
+                customerName: job.customerName,
+                jobName: job.jobName,
+                jobType: job.jobType,
+                profileId: job.profileId,
+                rooms: job.rooms || [],
+                basePrice: job.basePrice || job.grandTotal,
+                discountType: job.discountType,
+                discountValue: job.discountValue,
+                discountName: job.discountName,
+                discountAmount: job.discountAmount || 0,
+                projectSummaryNotes: job.projectSummaryNotes || '',
+                totalLabor: job.totalLabor,
+                totalMaterials: job.totalMaterials,
+                grandTotal: job.grandTotal
+            };
+            
+            // Populate discount fields
+            if (job.discountType) {
+                document.getElementById('discountType').value = job.discountType;
+                document.getElementById('discountName').value = job.discountName || '';
+                document.getElementById('discountValue').value = job.discountValue || 0;
+            }
+            
+            // Populate project notes
+            if (job.projectSummaryNotes) {
+                document.getElementById('projectSummaryNotes').value = job.projectSummaryNotes;
+            }
+            
+            // Display review
+            displayEstimateReview();
+            showScreen('estimateStep6Screen');
+        };
+
+        window.regenerateProposal = function(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+            
+            // Load job data into currentEstimate
+            currentEstimate = {
+                customerId: job.customerId,
+                customerName: job.customerName,
+                jobName: job.jobName,
+                jobType: job.jobType,
+                profileId: job.profileId,
+                rooms: job.rooms || [],
+                basePrice: job.basePrice || job.grandTotal,
+                discountType: job.discountType,
+                discountValue: job.discountValue,
+                discountName: job.discountName,
+                discountAmount: job.discountAmount || 0,
+                projectSummaryNotes: job.projectSummaryNotes || '',
+                totalLabor: job.totalLabor,
+                totalMaterials: job.totalMaterials,
+                grandTotal: job.grandTotal
+            };
+            
+            // Populate project notes for PDF generation
+            if (job.projectSummaryNotes) {
+                // Create temporary element if not on review screen
+                let notesElement = document.getElementById('projectSummaryNotes');
+                if (!notesElement) {
+                    notesElement = document.createElement('textarea');
+                    notesElement.id = 'projectSummaryNotes';
+                    notesElement.style.display = 'none';
+                    document.body.appendChild(notesElement);
+                }
+                notesElement.value = job.projectSummaryNotes;
+            }
+            
+            // Generate PDF
+            generateProposal();
+        };
+
+        // ============================================
+        // NEW ESTIMATE WORKFLOW (CertaPro Style)
+        // ============================================
+
+        // Start new estimate
+        window.startNewEstimate = function() {
+            // Reset estimate state
+            currentEstimate = {
+                customerId: null,
+                customerName: '',
+                jobName: '',
+                jobType: '',
+                profileId: null,
+                rooms: [],
+                totalLabor: 0,
+                totalMaterials: 0,
+                grandTotal: 0
+            };
+            
+            // Show customer selection
+            displayCustomerSelection();
+            showScreen('estimateStep1Screen');
+        };
+
+        // Step 1: Customer Selection
+        function displayCustomerSelection() {
+            const list = document.getElementById('customerSelectionList');
+            if (customers.length === 0) {
+                list.innerHTML = '<p style="color:#999;text-align:center;padding:40px">No customers yet. Add one below.</p>';
+                return;
+            }
+            list.innerHTML = customers.map(c => `
+                <div class="selection-card" onclick="selectCustomer('${c.id}')">
+                    <h3>${c.name}</h3>
+                    <p>${c.email || ''} ${c.phone || ''}</p>
+                </div>
+            `).join('');
+        }
+
+        window.selectCustomer = function(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) return;
+            
+            currentEstimate.customerId = customerId;
+            currentEstimate.customerName = customer.name;
+            currentEstimate.jobName = `${customer.name} - ${new Date().toLocaleDateString()}`;
+            
+            goToEstimateStep(2);
+        };
+
+        // Step 2: Job Type Selection
+        window.selectJobType = function(type) {
+            currentEstimate.jobType = type;
+            goToEstimateStep(3);
+        };
+
+        // Step 3: Profile Selection
+        window.goToEstimateStep = function(step) {
+            if (step === 1) {
+                displayCustomerSelection();
+                showScreen('estimateStep1Screen');
+            } else if (step === 2) {
+                showScreen('estimateStep2Screen');
+            } else if (step === 3) {
+                displayProfileSelection();
+                showScreen('estimateStep3Screen');
+            } else if (step === 4) {
+                displaySidesRoomsCards();
+                showScreen('estimateStep4Screen');
+            } else if (step === 6) {
+                displayEstimateReview();
+                showScreen('estimateStep6Screen');
+            }
+        };
+
+        function displayProfileSelection() {
+            const matchingProfiles = profiles.filter(p => p.type === currentEstimate.jobType);
+            const list = document.getElementById('profileSelectionList');
+            
+            if (matchingProfiles.length === 0) {
+                list.innerHTML = '<p style="color:#999;text-align:center;padding:40px">No profiles for this job type. Create one in Profiles or skip.</p>';
+                return;
+            }
+            
+            list.innerHTML = matchingProfiles.map(p => `
+                <div class="selection-card" onclick="selectProfile('${p.id}')">
+                    <h3>${p.name}</h3>
+                    <p>${Object.keys(p.surfaceMapping || {}).length} surfaces configured</p>
+                </div>
+            `).join('');
+        }
+
+        window.selectProfile = function(profileId) {
+            currentEstimate.profileId = profileId;
+            goToEstimateStep(4);
+        };
+
+
+        // Calculation Functions (needed by all steps)
+        function calculateSurfaceCost(surface) {
+            const qty = surface.quantity;
+            const coats = surface.coats;
+            let labor = 0, material = 0;
+            
+            if (currentEstimate.jobType === 'Exterior') {
+                switch(surface.surfaceType) {
+                    case 'Siding':
+                        labor = (qty / PRICING.SidingLaborRate) * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.SidingPaintCoverage) * PRICING.PaintPricePerGallon * coats;
+                        break;
+                    case 'Soffit':
+                    case 'Fascia':
+                        labor = (qty / (surface.surfaceType === 'Soffit' ? PRICING.SoffitLaborRate : PRICING.FasciaLaborRate)) * PRICING.LaborRate * coats;
+                        material = (qty / (surface.surfaceType === 'Soffit' ? PRICING.SoffitPaintCoverage : PRICING.FasciaPaintCoverage)) * PRICING.PaintPricePerGallon * coats;
+                        break;
+                    case 'Windows':
+                        labor = (qty / PRICING.WindowLaborRate) * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.WindowPaintCoverage) * PRICING.PaintPricePerGallon * coats;
+                        break;
+                    case 'Front Door':
+                    case 'Doors':
+                        labor = qty * PRICING.DoorLaborHours * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.DoorPaintCoverage) * PRICING.PaintPricePerGallon * coats;
+                        break;
+                    case 'Bay Windows':
+                        labor = qty * PRICING.BayWindowLaborHours * PRICING.LaborRate;
+                        material = 0;
+                        break;
+                    case 'Railings':
+                        labor = qty * PRICING.RailingLaborHours * PRICING.LaborRate;
+                        material = qty * PRICING.RailingPaintCost;
+                        break;
+                    case 'Shutters':
+                    case 'Front Door Frame':
+                    case 'Garage Door':
+                    case 'Garage Door Frame':
+                        labor = qty * PRICING.DoorLaborHours * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.DoorPaintCoverage) * PRICING.PaintPricePerGallon * coats;
+                        break;
+                    default:
+                        labor = (qty / 100) * PRICING.LaborRate * coats;
+                        material = (qty / 200) * PRICING.PaintPricePerGallon * coats;
+                }
+            } else {
+                switch(surface.surfaceType) {
+                    case 'Walls':
+                    case 'Ceiling':
+                        labor = (qty / PRICING.WallCeilingLaborRate) * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.WallCeilingPaintCoverage) * PRICING.InteriorPaintPricePerGallon * coats;
+                        break;
+                    case 'Doors':
+                        labor = qty * PRICING.InteriorDoorLaborHours * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.InteriorDoorPaintCoverage) * PRICING.InteriorPaintPricePerGallon * coats;
+                        break;
+                    case 'Windows':
+                        labor = (qty / PRICING.InteriorWindowLaborRate) * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.InteriorWindowPaintCoverage) * PRICING.InteriorPaintPricePerGallon * coats;
+                        break;
+                    case 'Baseboards':
+                        labor = (qty / PRICING.BaseboardLaborRate) * PRICING.LaborRate * coats;
+                        material = (qty / PRICING.BaseboardPaintCoverage) * PRICING.InteriorPaintPricePerGallon * coats;
+                        break;
+                    case 'Closets':
+                        labor = PRICING.ClosetFlatRate * qty * coats;
+                        material = 0;
+                        break;
+                    case 'Cabinet Doors':
+                        labor = PRICING.CabinetDoorPrice * qty;
+                        material = 0;
+                        break;
+                    case 'Cabinet Drawers':
+                        labor = PRICING.CabinetDrawerPrice * qty;
+                        material = 0;
+                        break;
+                    case 'Spindles':
+                        labor = PRICING.SpindlePricePerCoat * PRICING.SpindleStandardCoats * qty;
+                        material = 0;
+                        break;
+                    default:
+                        labor = (qty / 100) * PRICING.LaborRate * coats;
+                        material = (qty / 300) * PRICING.InteriorPaintPricePerGallon * coats;
+                }
+            }
+            
+            return { laborCost: labor, materialCost: material, total: labor + material };
+        }
+
+        function calculateRoomTotal(room) {
+            let total = 0;
+            
+            // Setup hours
+            total += (room.setupHours || 0) * PRICING.LaborRate;
+            
+            // All surfaces
+            room.surfaces.forEach(surface => {
+                const cost = calculateSurfaceCost(surface);
+                surface.laborCost = cost.laborCost;
+                surface.materialCost = cost.materialCost;
+                surface.total = cost.total;
+                total += cost.total;
+            });
+            
+            return total;
+        }
+
+        // Room Detail Screen Functions
+        function displayRoomDetail() {
+            if (!window.currentRoom) return;
+            
+            document.getElementById('roomDetailTitle').textContent = window.currentRoom.name;
+            document.getElementById('roomSetupHours').value = window.currentRoom.setupHours || 0;
+            
+            // Show/hide dimensions based on job type
+            const isInterior = currentEstimate.jobType === 'Interior';
+            const dimensionsSection = document.getElementById('roomDimensionsSection');
+            
+            if (isInterior) {
+                dimensionsSection.classList.remove('hidden');
+                document.getElementById('roomLength').value = window.currentRoom.length || '';
+                document.getElementById('roomWidth').value = window.currentRoom.width || '';
+                document.getElementById('roomHeight').value = window.currentRoom.height || 8;
+            } else {
+                dimensionsSection.classList.add('hidden');
+            }
+            
+            document.getElementById('roomNotes').value = window.currentRoom.notes || '';
+            
+            if (window.currentRoom.photoData) {
+                document.getElementById('roomPhotoPreview').src = window.currentRoom.photoData;
+                document.getElementById('roomPhotoPreview').classList.remove('hidden');
+            } else {
+                document.getElementById('roomPhotoPreview').classList.add('hidden');
+            }
+            
+            displaySurfaceButtons();
+            updateRoomTotals();
+        }
+
+        function displaySurfaceButtons() {
+            const surfaces = currentEstimate.jobType === 'Exterior' ? EXTERIOR_SURFACES : INTERIOR_SURFACES;
+            const container = document.getElementById('surfaceCardsList');
+            
+            container.innerHTML = ''; // Clear first
+            
+            surfaces.forEach(surfaceType => {
+                const surface = window.currentRoom.surfaces.find(s => s.surfaceType === surfaceType);
+                
+                const box = document.createElement('div');
+                box.style.padding = '15px';
+                box.style.marginBottom = '10px';
+                box.style.borderRadius = '8px';
+                box.style.cursor = 'pointer';
+                box.style.position = 'relative';
+                
+                if (surface) {
+                    // FILLED BOX - Green with details
+                    box.style.background = '#d4edda';
+                    box.style.border = '2px solid #28a745';
+                    
+                    const cost = calculateSurfaceCost(surface);
+                    box.innerHTML = `
+                        <div style="padding-right:35px;">
+                            <h4 style="margin:0 0 5px 0;color:#155724;">✓ ${surfaceType}</h4>
+                            <p style="margin:2px 0;font-size:10pt;color:#155724;">${surface.color} • ${surface.sheen} • ${surface.coats} coat(s)</p>
+                            <p style="margin:2px 0;font-weight:bold;color:#155724;">$${(cost.total || 0).toFixed(2)}</p>
+                        </div>
+                    `;
+                    
+                    // Small delete button
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-danger';
+                    deleteBtn.style.position = 'absolute';
+                    deleteBtn.style.top = '10px';
+                    deleteBtn.style.right = '10px';
+                    deleteBtn.style.width = '24px';
+                    deleteBtn.style.height = '24px';
+                    deleteBtn.style.padding = '0';
+                    deleteBtn.style.fontSize = '14px';
+                    deleteBtn.style.lineHeight = '24px';
+                    deleteBtn.style.borderRadius = '4px';
+                    deleteBtn.textContent = '×';
+                    deleteBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        deleteSurfaceFromRoom(surfaceType);
+                    });
+                    box.appendChild(deleteBtn);
+                    
+                } else {
+                    // EMPTY BOX - White, clickable
+                    box.style.background = '#fff';
+                    box.style.border = '2px solid #ddd';
+                    box.innerHTML = `<h4 style="margin:0;color:#666;">${surfaceType}</h4>`;
+                }
+                
+                box.addEventListener('click', function() {
+                    openSurfaceConfig(surfaceType);
+                });
+                
+                container.appendChild(box);
+            });
+        }
+        
+        // Delete surface from current room
+        function deleteSurfaceFromRoom(surfaceType) {
+            if (!confirm('Delete this surface?')) return;
+            
+            const index = window.currentRoom.surfaces.findIndex(s => s.surfaceType === surfaceType);
+            if (index >= 0) {
+                window.currentRoom.surfaces.splice(index, 1);
+                displaySurfaceButtons();
+                updateRoomTotals();
+            }
+        }
+
+        window.updateRoomDetail = function() {
+            if (!window.currentRoom) return;
+            
+            window.currentRoom.setupHours = parseFloat(document.getElementById('roomSetupHours').value) || 0;
+            window.currentRoom.length = parseFloat(document.getElementById('roomLength').value) || 0;
+            window.currentRoom.width = parseFloat(document.getElementById('roomWidth').value) || 0;
+            window.currentRoom.height = parseFloat(document.getElementById('roomHeight').value) || 8;
+            window.currentRoom.notes = document.getElementById('roomNotes').value;
+            
+            updateRoomTotals();
+        };
+
+        function updateRoomTotals() {
+            if (!window.currentRoom) return;
+            
+            let laborTotal = (window.currentRoom.setupHours || 0) * PRICING.LaborRate;
+            let materialTotal = 0;
+            
+            window.currentRoom.surfaces.forEach(surface => {
+                const cost = calculateSurfaceCost(surface);
+                laborTotal += cost.laborCost || 0;
+                materialTotal += cost.materialCost || 0;
+            });
+            
+            document.getElementById('roomLaborTotal').textContent = `$${laborTotal.toFixed(2)}`;
+            document.getElementById('roomMaterialTotal').textContent = `$${materialTotal.toFixed(2)}`;
+            document.getElementById('roomGrandTotal').textContent = `$${(laborTotal + materialTotal).toFixed(2)}`;
+        }
+
+        window.handleRoomPhotoUpload = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const compressed = await compressImage(file, 600, 0.7);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                window.currentRoom.photoData = e.target.result;
+                document.getElementById('roomPhotoPreview').src = e.target.result;
+                document.getElementById('roomPhotoPreview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(compressed);
+        };
+
+        window.backToOverview = function() {
+            // Save current room data
+            if (window.currentRoom) {
+                updateRoomDetail();
+            }
+            // Go back to Step 4 cards view
+            displaySidesRoomsCards();
+            showScreen('estimateStep4Screen');
+        };
+
+        window.saveRoomAndContinue = function() {
+            // Save and go back to cards view
+            if (window.currentRoom) {
+                updateRoomDetail();
+            }
+            displaySidesRoomsCards();
+            showScreen('estimateStep4Screen');
+        };
+
+        // Open surface config from room detail screen
+        window.openSurfaceConfig = function(surfaceType) {
+            window.currentSurfaceType = surfaceType;
+            const existingSurface = window.currentRoom.surfaces.find(s => s.surfaceType === surfaceType);
+            
+            // Update modal title
+            document.getElementById('surfaceConfigTitle').textContent = 'Configure ' + surfaceType;
+            
+            // Populate product dropdown
+            const productDropdown = document.getElementById('surfaceProduct');
+            productDropdown.innerHTML = '<option value="">Select Product...</option>';
+            window.products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productDropdown.appendChild(option);
+            });
+            
+            // Auto-calculate quantity if applicable
+            const autoCalcQty = getAutoCalculatedQuantity(surfaceType);
+            const canAutoCalc = autoCalcQty !== null && currentEstimate.jobType === 'Interior';
+            
+            // Set quantity label and unit
+            const unit = getSurfaceUnit(surfaceType);
+            document.getElementById('surfaceQuantityLabel').textContent = 'Quantity (' + unit + ')';
+            document.getElementById('surfaceUnit').textContent = unit;
+            
+            if (existingSurface) {
+                // Editing existing
+                document.getElementById('surfaceQuantity').value = existingSurface.quantity || '';
+                document.getElementById('surfaceProduct').value = existingSurface.productId || '';
+                document.getElementById('surfaceSheen').value = existingSurface.sheen || '';
+                document.getElementById('surfaceColor').value = existingSurface.color || '';
+                document.getElementById('surfaceCoats').value = existingSurface.coats || 2;
+                document.getElementById('autoCalcNote').classList.add('hidden');
+            } else {
+                // New surface
+                if (canAutoCalc) {
+                    document.getElementById('surfaceQuantity').value = autoCalcQty.toFixed(2);
+                    document.getElementById('autoCalcNote').classList.remove('hidden');
+                } else {
+                    document.getElementById('surfaceQuantity').value = '';
+                    document.getElementById('autoCalcNote').classList.add('hidden');
+                }
+                document.getElementById('surfaceProduct').value = '';
+                document.getElementById('surfaceSheen').value = 'Satin';
+                document.getElementById('surfaceColor').value = '';
+                document.getElementById('surfaceCoats').value = 2;
+            }
+            
+            // Show modal
+            showScreen('surfaceConfigModal');
+        };
+        
+        // Auto-calculate quantity for walls/ceiling/baseboards
+        function getAutoCalculatedQuantity(surfaceType) {
+            if (!window.currentRoom.length || !window.currentRoom.width || !window.currentRoom.height) return null;
+            
+            const L = window.currentRoom.length;
+            const W = window.currentRoom.width;
+            const H = window.currentRoom.height;
+            
+            switch(surfaceType) {
+                case 'Ceiling': return L * W;
+                case 'Walls': return 2 * (L * H) + 2 * (W * H);
+                case 'Baseboards': return 2 * (L + W);
+                default: return null;
+            }
+        }
+        
+        // Get the unit for a surface type
+        function getSurfaceUnit(surfaceType) {
+            const sqFtSurfaces = ['Siding', 'Ceiling', 'Walls'];
+            const linFtSurfaces = ['Soffit', 'Fascia', 'Baseboards'];
+            
+            if (sqFtSurfaces.includes(surfaceType)) return 'Sq Ft';
+            if (linFtSurfaces.includes(surfaceType)) return 'Lin Ft';
+            return 'Units';
+        }
+
+        window.addCustomSurface = function() {
+            const surfaceName = prompt('Enter custom surface name:');
+            if (!surfaceName || !surfaceName.trim()) return;
+            
+            openSurfaceConfig(surfaceName.trim());
+        };
+
+        // NEW Step 4: Display all sides/rooms as cards
+        function displaySidesRoomsCards() {
+            console.log('displaySidesRoomsCards called');
+            const isInterior = currentEstimate.jobType === 'Interior';
+            const container = document.getElementById('sidesRoomsCards');
+            
+            if (!container) {
+                console.error('Container sidesRoomsCards not found!');
+                return;
+            }
+            
+            document.getElementById('step4Title').textContent = isInterior ? 'Select Rooms' : 'Select Sides';
+            document.getElementById('step4Subtitle').textContent = isInterior ? 'Click each room to add surfaces' : 'Click each side to add surfaces';
+            
+            // Initialize rooms array if not exists
+            if (!currentEstimate.rooms) {
+                currentEstimate.rooms = [];
+            }
+            
+            // Get preset options
+            const presets = isInterior ? INTERIOR_ROOMS : EXTERIOR_SIDES;
+            console.log('Presets:', presets);
+            
+            // Build cards HTML
+            container.innerHTML = ''; // Clear first
+            
+            presets.forEach(name => {
+                const room = currentEstimate.rooms.find(r => r.name === name);
+                const total = room ? calculateRoomTotal(room) : 0;
+                const surfaceCount = room ? room.surfaces.length : 0;
+                
+                const card = document.createElement('div');
+                card.className = 'room-card';
+                card.style.cursor = 'pointer';
+                card.style.position = 'relative';
+                card.style.padding = '15px';
+                card.style.marginBottom = '10px';
+                card.style.border = '2px solid #ddd';
+                card.style.borderRadius = '8px';
+                card.style.background = '#fff';
+                
+                card.innerHTML = `
+                    <h3>${isInterior ? '🛏️' : '🏠'} ${name}</h3>
+                    <p style="color:#666;margin:5px 0;">${surfaceCount} surface(s) configured</p>
+                    <p style="font-weight:bold;color:#11998e;font-size:14pt;margin:5px 0;">$${total.toFixed(2)}</p>
+                `;
+                
+                card.addEventListener('click', function() {
+                    console.log('Card clicked:', name);
+                    openSurfaceSelection(name);
+                });
+                
+                if (room && surfaceCount > 0) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-danger';
+                    deleteBtn.style.position = 'absolute';
+                    deleteBtn.style.top = '10px';
+                    deleteBtn.style.right = '10px';
+                    deleteBtn.style.width = '24px';
+                    deleteBtn.style.height = '24px';
+                    deleteBtn.style.padding = '0';
+                    deleteBtn.style.fontSize = '16px';
+                    deleteBtn.style.lineHeight = '24px';
+                    deleteBtn.style.borderRadius = '4px';
+                    deleteBtn.style.cursor = 'pointer';
+                    deleteBtn.textContent = '×';
+                    deleteBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        deleteEntireSideRoom(name);
+                    });
+                    card.appendChild(deleteBtn);
+                }
+                
+                container.appendChild(card);
+            });
+            
+            updateStep4Total();
+            console.log('Cards rendered:', presets.length);
+        }
+        
+        function updateStep4Total() {
+            let total = 0;
+            if (currentEstimate.rooms) {
+                currentEstimate.rooms.forEach(room => {
+                    total += calculateRoomTotal(room);
+                });
+            }
+            document.getElementById('step4TotalDisplay').textContent = '$' + total.toFixed(2);
+        }
+        
+        // Open room detail screen for a specific side/room
+        window.openSurfaceSelection = function(name) {
+            console.log('openSurfaceSelection called with:', name);
+            window.currentSideName = name;
+            
+            // Find or create room
+            let room = currentEstimate.rooms.find(r => r.name === name);
+            if (!room) {
+                console.log('Creating new room:', name);
+                room = {
+                    name: name,
+                    setupHours: 0,
+                    length: 0,
+                    width: 0,
+                    height: 8,
+                    photoData: null,
+                    notes: '',
+                    surfaces: []
+                };
+                currentEstimate.rooms.push(room);
+            } else {
+                console.log('Found existing room:', room);
+            }
+            
+            // Store current room
+            window.currentRoom = room;
+            
+            // Display room detail screen
+            displayRoomDetail();
+            showScreen('roomDetailScreen');
+        };
+        
+        // Display surface boxes (empty or filled)
+        function displaySurfaceBoxes() {
+            console.log('displaySurfaceBoxes called for:', window.currentSideName);
+            const container = document.getElementById('surfaceBoxesContainer');
+            const isExterior = currentEstimate.jobType === 'Exterior';
+            const surfaceTypes = isExterior ? EXTERIOR_SURFACES : INTERIOR_SURFACES;
+            
+            const room = currentEstimate.rooms.find(r => r.name === window.currentSideName);
+            console.log('Room found:', room);
+            
+            container.innerHTML = ''; // Clear first
+            
+            surfaceTypes.forEach(surfaceType => {
+                const surface = room.surfaces.find(s => s.surfaceType === surfaceType);
+                
+                const box = document.createElement('div');
+                box.className = surface ? 'surface-box filled' : 'surface-box empty';
+                box.style.padding = '15px';
+                box.style.marginBottom = '10px';
+                box.style.borderRadius = '8px';
+                box.style.cursor = 'pointer';
+                box.style.position = 'relative';
+                
+                if (surface) {
+                    // FILLED BOX - Green with details
+                    box.style.background = '#d4edda';
+                    box.style.border = '2px solid #28a745';
+                    
+                    const cost = calculateSurfaceCost(surface);
+                    box.innerHTML = `
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-right:35px;">
+                            <div style="flex:1;">
+                                <h4 style="margin:0 0 5px 0;color:#155724;">✓ ${surfaceType}</h4>
+                                <p style="margin:2px 0;font-size:10pt;color:#155724;">${surface.color} • ${surface.sheen} • ${surface.coats} coat(s)</p>
+                                <p style="margin:2px 0;font-weight:bold;color:#155724;">$${(cost.total || 0).toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Small delete button in top-right corner
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-danger';
+                    deleteBtn.style.position = 'absolute';
+                    deleteBtn.style.top = '10px';
+                    deleteBtn.style.right = '10px';
+                    deleteBtn.style.width = '24px';
+                    deleteBtn.style.height = '24px';
+                    deleteBtn.style.padding = '0';
+                    deleteBtn.style.fontSize = '14px';
+                    deleteBtn.style.lineHeight = '24px';
+                    deleteBtn.style.borderRadius = '4px';
+                    deleteBtn.style.cursor = 'pointer';
+                    deleteBtn.textContent = '×';
+                    deleteBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        deleteSurface(surfaceType);
+                    });
+                    box.appendChild(deleteBtn);
+                    
+                } else {
+                    // EMPTY BOX - White, clickable
+                    box.style.background = '#fff';
+                    box.style.border = '2px solid #ddd';
+                    box.innerHTML = `<h4 style="margin:0;color:#666;">${surfaceType}</h4>`;
+                }
+                
+                box.addEventListener('click', function() {
+                    console.log('Surface box clicked:', surfaceType);
+                    configureSurface(surfaceType);
+                });
+                
+                container.appendChild(box);
+            });
+            
+            updateSideRoomTotal();
+            console.log('Surface boxes rendered:', surfaceTypes.length);
+        }
+        
+        function updateSideRoomTotal() {
+            const room = currentEstimate.rooms.find(r => r.name === window.currentSideName);
+            const total = room ? calculateRoomTotal(room) : 0;
+            document.getElementById('sideRoomTotal').textContent = '$' + total.toFixed(2);
+        }
+        
+        // Configure a surface (opens modal)
+        window.configureSurface = function(surfaceType) {
+            console.log('configureSurface called for:', surfaceType);
+            const room = currentEstimate.rooms.find(r => r.name === window.currentSideName);
+            const existingSurface = room.surfaces.find(s => s.surfaceType === surfaceType);
+            
+            // Store which surface we're editing
+            window.currentSurfaceType = surfaceType;
+            
+            // Update modal title
+            document.getElementById('surfaceConfigTitle').textContent = 'Configure ' + surfaceType;
+            
+            // Populate product dropdown
+            const productDropdown = document.getElementById('surfaceProduct');
+            productDropdown.innerHTML = '<option value="">Select Product...</option>';
+            window.products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productDropdown.appendChild(option);
+            });
+            
+            if (existingSurface) {
+                // Editing existing
+                document.getElementById('surfaceQuantity').value = existingSurface.quantity || '';
+                document.getElementById('surfaceProduct').value = existingSurface.productId || '';
+                document.getElementById('surfaceSheen').value = existingSurface.sheen || '';
+                document.getElementById('surfaceColor').value = existingSurface.color || '';
+                document.getElementById('surfaceCoats').value = existingSurface.coats || 2;
+            } else {
+                // New surface
+                document.getElementById('surfaceQuantity').value = '';
+                document.getElementById('surfaceProduct').value = '';
+                document.getElementById('surfaceSheen').value = 'Satin';
+                document.getElementById('surfaceColor').value = '';
+                document.getElementById('surfaceCoats').value = 2;
+            }
+            
+            // Show modal
+            console.log('Showing surfaceConfigModal');
+            showScreen('surfaceConfigModal');
+        };
+        
+        // Save surface configuration
+        window.saveSurface = function() {
+            console.log('saveSurface called');
+            const surfaceType = window.currentSurfaceType;
+            
+            const quantity = parseFloat(document.getElementById('surfaceQuantity').value);
+            const productId = document.getElementById('surfaceProduct').value;
+            const sheen = document.getElementById('surfaceSheen').value;
+            const color = document.getElementById('surfaceColor').value;
+            const coats = parseInt(document.getElementById('surfaceCoats').value);
+            
+            if (!quantity || !productId || !sheen || !color || !coats) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Find or create surface in currentRoom
+            let surface = window.currentRoom.surfaces.find(s => s.surfaceType === surfaceType);
+            if (!surface) {
+                surface = { surfaceType: surfaceType };
+                window.currentRoom.surfaces.push(surface);
+            }
+            
+            // Update surface data
+            surface.quantity = quantity;
+            surface.productId = productId;
+            surface.sheen = sheen;
+            surface.color = color;
+            surface.coats = coats;
+            
+            console.log('Surface saved:', surface);
+            
+            // Refresh room detail screen and go back
+            displayRoomDetail();
+            showScreen('roomDetailScreen');
+        };
+        
+        // Close surface config modal (back button)
+        window.closeSurfaceConfig = function() {
+            showScreen('roomDetailScreen');
+        };
+        
+        // Delete individual surface
+        window.deleteSurface = function(surfaceType) {
+            if (!confirm('Delete this surface?')) return;
+            
+            const room = currentEstimate.rooms.find(r => r.name === window.currentSideName);
+            const index = room.surfaces.findIndex(s => s.surfaceType === surfaceType);
+            
+            if (index >= 0) {
+                room.surfaces.splice(index, 1);
+                displaySurfaceBoxes();
+            }
+        };
+        
+        // Delete entire side/room
+        window.deleteSideRoom = function() {
+            const name = window.currentSideName;
+            if (!confirm('Delete entire ' + name + ' with all surfaces?')) return;
+            
+            const index = currentEstimate.rooms.findIndex(r => r.name === name);
+            if (index >= 0) {
+                currentEstimate.rooms.splice(index, 1);
+            }
+            
+            // Go back to cards
+            backToSidesRooms();
+        };
+        
+        window.deleteEntireSideRoom = function(name) {
+            if (!confirm('Delete ' + name + ' and all its surfaces?')) return;
+            
+            const index = currentEstimate.rooms.findIndex(r => r.name === name);
+            if (index >= 0) {
+                currentEstimate.rooms.splice(index, 1);
+                displaySidesRoomsCards();
+            }
+        };
+        
+        // Go back to sides/rooms cards
+        window.backToSidesRooms = function() {
+            displaySidesRoomsCards();
+            showScreen('estimateStep4Screen');
+        };
+        
+        // Add custom side/room
+        window.addCustomSideRoom = function() {
+            const name = document.getElementById('customRoomInput').value.trim();
+            if (!name) {
+                alert('Please enter a name');
+                return;
+            }
+            
+            // Check if already exists
+            if (currentEstimate.rooms.find(r => r.name === name)) {
+                alert('This side/room already exists');
+                return;
+            }
+            
+            // Add to estimate
+            currentEstimate.rooms.push({
+                name: name,
+                setupHours: 0,
+                surfaces: []
+            });
+            
+            // Clear input
+            document.getElementById('customRoomInput').value = '';
+            
+            // Refresh display
+            displaySidesRoomsCards();
+        };
+        // Step 6: Review Estimate
+        function displayEstimateReview() {
+            const content = document.getElementById('estimateReviewContent');
+            
+            let totalLabor = 0;
+            let totalMaterials = 0;
+            
+            const roomsHTML = currentEstimate.rooms.map(room => {
+                const roomTotal = calculateRoomTotal(room);
+                let roomLabor = (room.setupHours || 0) * PRICING.LaborRate;
+                let roomMaterials = 0;
+                
+                room.surfaces.forEach(s => {
+                    roomLabor += s.laborCost || 0;
+                    roomMaterials += s.materialCost || 0;
+                });
+                
+                totalLabor += roomLabor;
+                totalMaterials += roomMaterials;
+                
+                return `
+                    <div class="room-card">
+                        <h3>${room.name} ${room.photoData ? '📷' : ''}</h3>
+                        ${room.setupHours > 0 ? `<p>Setup: ${room.setupHours} hours</p>` : ''}
+                        ${room.notes ? `<p style="font-style:italic;color:#666;">${room.notes}</p>` : ''}
+                        <div style="margin:10px 0;">
+                            ${room.surfaces.map(s => {
+                                const product = products.find(p => p.id === s.productId);
+                                return `
+                                    <div style="margin:8px 0;padding:10px;background:#f8f9fa;border-radius:8px;">
+                                        <strong>${s.surfaceType}</strong>: ${s.quantity} ${s.unit}<br>
+                                        <span style="font-size:14px;color:#666;">
+                                            ${product ? product.brand + ' - ' + product.name : 'Product'} - ${s.sheen} - ${s.color} - ${s.coats} coat(s)
+                                        </span><br>
+                                        <span style="color:#11998e;">$${s.total.toFixed(2)}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <p style="font-weight:600;color:#667eea;font-size:18px;">Room Total: $${roomTotal.toFixed(2)}</p>
+                    </div>
+                `;
+            }).join('');
+            
+            content.innerHTML = roomsHTML;
+            
+            currentEstimate.basePrice = totalLabor + totalMaterials;
+            currentEstimate.totalLabor = totalLabor;
+            currentEstimate.totalMaterials = totalMaterials;
+            
+            updateDiscountPreview();
+        }
+
+        // Update discount preview and totals
+        window.updateDiscountPreview = function() {
+            const discountType = document.getElementById('discountType').value;
+            const discountValue = parseFloat(document.getElementById('discountValue').value) || 0;
+            const discountName = document.getElementById('discountName').value || 'Discount';
+            
+            // Show/hide discount value field
+            const valueGroup = document.getElementById('discountValueGroup');
+            const valueLabel = document.getElementById('discountValueLabel');
+            
+            if (discountType) {
+                valueGroup.style.display = 'block';
+                valueLabel.textContent = discountType === 'percentage' ? 'Percentage (%)' : 'Fixed Amount ($)';
+            } else {
+                valueGroup.style.display = 'none';
+            }
+            
+            // Calculate discount
+            const basePrice = currentEstimate.basePrice || 0;
+            let discountAmount = 0;
+            
+            if (discountType === 'percentage') {
+                discountAmount = (basePrice * discountValue) / 100;
+            } else if (discountType === 'fixed') {
+                discountAmount = discountValue;
+            }
+            
+            const subtotal = basePrice - discountAmount;
+            const deposit = subtotal * 0.5;
+            const balance = subtotal * 0.5;
+            
+            // Store in estimate object
+            currentEstimate.discountType = discountType;
+            currentEstimate.discountValue = discountValue;
+            currentEstimate.discountName = discountName;
+            currentEstimate.discountAmount = discountAmount;
+            currentEstimate.grandTotal = subtotal;
+            
+            // Update display
+            document.getElementById('reviewBasePrice').textContent = `$${basePrice.toFixed(2)}`;
+            document.getElementById('reviewSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('reviewDeposit').textContent = `$${deposit.toFixed(2)}`;
+            document.getElementById('reviewBalance').textContent = `$${balance.toFixed(2)}`;
+            document.getElementById('reviewGrandTotal').textContent = `$${subtotal.toFixed(2)}`;
+            
+            // Show/hide discount row
+            const discountRow = document.getElementById('discountRow');
+            if (discountType && discountAmount > 0) {
+                discountRow.style.display = 'block';
+                const displayName = discountName + (discountType === 'percentage' ? ` (${discountValue}%)` : '');
+                document.getElementById('discountDisplayName').textContent = displayName;
+                document.getElementById('reviewDiscountAmount').textContent = `-$${discountAmount.toFixed(2)}`;
+            } else {
+                discountRow.style.display = 'none';
+            }
+        };
+
+        // Save Estimate
+        window.saveEstimate = async function() {
+            if (!currentEstimate.customerId || currentEstimate.rooms.length === 0) {
+                alert('Please complete the estimate before saving');
+                return;
+            }
+            
+            // Capture discount and project notes from form
+            const projectNotes = document.getElementById('projectSummaryNotes')?.value || '';
+            
+            const job = {
+                userId: currentUser.uid,
+                customerId: currentEstimate.customerId,
+                customerName: currentEstimate.customerName,
+                jobName: currentEstimate.jobName,
+                jobType: currentEstimate.jobType,
+                profileId: currentEstimate.profileId,
+                rooms: currentEstimate.rooms,
+                basePrice: currentEstimate.basePrice,
+                discountType: currentEstimate.discountType,
+                discountValue: currentEstimate.discountValue,
+                discountName: currentEstimate.discountName,
+                discountAmount: currentEstimate.discountAmount,
+                projectSummaryNotes: projectNotes,
+                totalLabor: currentEstimate.totalLabor,
+                totalMaterials: currentEstimate.totalMaterials,
+                grandTotal: currentEstimate.grandTotal,
+                status: 'Draft',
+                date: new Date().toISOString()
+            };
+            
+            try {
+                await addDoc(collection(db, 'jobs'), job);
+                alert('Estimate saved successfully!');
+                await loadJobs();
+                showScreen('homeScreen');
+            } catch (error) {
+                alert('Error saving estimate: ' + error.message);
+            }
+        };
+
+        // Format contract text for PDF
+        function formatContractTextForPDF(text) {
+            if (!text) return '';
+            
+            let html = '';
+            const lines = text.split('\n');
+            let inList = false;
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                
+                // Skip empty lines
+                if (!line) {
+                    if (inList) {
+                        html += '</ul>';
+                        inList = false;
+                    }
+                    html += '<br>';
+                    continue;
+                }
+                
+                // Check if line is ALL CAPS (section header)
+                if (line === line.toUpperCase() && line.length > 2 && !line.startsWith('-') && !line.startsWith('*')) {
+                    if (inList) {
+                        html += '</ul>';
+                        inList = false;
+                    }
+                    html += '<h2>' + line + '</h2>';
+                    continue;
+                }
+                
+                // Check if line is a bullet point
+                if (line.startsWith('- ') || line.startsWith('• ')) {
+                    if (!inList) {
+                        html += '<ul>';
+                        inList = true;
+                    }
+                    line = line.substring(2); // Remove the bullet
+                    // Process bold within the line
+                    line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    html += '<li>' + line + '</li>';
+                    continue;
+                }
+                
+                // Regular paragraph
+                if (inList) {
+                    html += '</ul>';
+                    inList = false;
+                }
+                
+                // Process bold text **text**
+                line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                html += '<p>' + line + '</p>';
+            }
+            
+            // Close any open list
+            if (inList) {
+                html += '</ul>';
+            }
+            
+            return html;
+        }
+
+        // Get contract terms (from cached data, database, or defaults)
+        async function getContractTermsForPDF(jobType) {
+            // Try cached version first
+            if (contractTerms) {
+                return jobType === 'Interior' ? contractTerms.interiorContract : contractTerms.exteriorContract;
+            }
+            
+            // Try loading from database
+            try {
+                const contractDoc = await getDocs(query(collection(db, 'contractTerms'), where('userId', '==', currentUser.uid)));
+                if (!contractDoc.empty) {
+                    window.contractTerms = contractDoc.docs[0].data();
+                    return jobType === 'Interior' ? contractTerms.interiorContract : contractTerms.exteriorContract;
+                }
+            } catch (error) {
+                console.error('Error loading contract terms for PDF:', error);
+            }
+            
+            // Return defaults if no custom terms found
+            return jobType === 'Interior' ? getDefaultInteriorContract() : getDefaultExteriorContract();
+        }
+
+        // Generate Proposal PDF
+        window.generateProposal = async function() {
+            if (currentEstimate.rooms.length === 0) {
+                alert('Please add rooms before generating proposal');
+                return;
+            }
+            
+            const customer = customers.find(c => c.id === currentEstimate.customerId);
+            const date = new Date().toLocaleDateString();
+            const deposit = (currentEstimate.grandTotal * 0.5).toFixed(2);
+            const balance = (currentEstimate.grandTotal * 0.5).toFixed(2);
+            
+            // Group surfaces by room
+            const groupedRooms = currentEstimate.rooms.filter(room => room.surfaces.length > 0);
+            
+            // Open PDF window
+            const win = window.open('', '_blank', 'width=900,height=800');
+            if (!win) {
+                alert('Please allow popups for this site to generate PDFs. On iPhone: Settings → Safari → Block Pop-ups (turn OFF)');
+                return;
+            }
+            
+            // Start building PDF
+            win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Northern Star Painters - Proposal</title>');
+            win.document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+            win.document.write('<style>');
+            win.document.write('@page{margin:0.5in}body{font-family:Arial,sans-serif;max-width:100%;margin:0 auto;padding:10px;font-size:10pt;color:#000}');
+            win.document.write('.blue-bar{background:#003d7a;height:10px;margin:0 0 20px 0}');
+            win.document.write('.header{text-align:center;padding:20px 0;border-bottom:3px solid #003d7a}');
+            if (companySettings?.logoUrl) {
+                win.document.write('.header img{max-width:350px;max-height:120px;margin-bottom:15px}');
+            }
+            win.document.write('.header h1{color:#003d7a;font-size:42px;margin:15px 0}');
+            win.document.write('.stars{color:#f4a624;font-size:28px}');
+            win.document.write('.company-info{text-align:center;color:#666;margin:10px 0;font-size:10pt}');
+            win.document.write('.section-title{background:#fff;color:#003d7a;padding:6px 0;margin:20px 0 10px;font-weight:bold;font-size:14pt;border-bottom:3px solid #003d7a}');
+            win.document.write('.info-box{background:#f0f8ff;border:2px solid #003d7a;padding:15px;border-radius:8px}');
+            win.document.write('.proposal-details{background:#e8f4f8;border-left:4px solid #003d7a;padding:15px;margin:20px 0;font-size:11pt}');
+            win.document.write('.proposal-details p{margin:8px 0;color:#000}');
+            win.document.write('.price-row{display:flex;justify-content:space-between;padding:8px 0;font-size:11pt;border-bottom:1px solid #ddd}');
+            win.document.write('.price-row.total{border-top:2px solid #003d7a;border-bottom:none;font-weight:bold;margin-top:10px;padding-top:10px}');
+            win.document.write('.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}');
+            win.document.write('.consultant-box{display:flex;align-items:center;gap:15px}');
+            win.document.write('.consultant-photo{width:80px;height:80px;border-radius:50%;object-fit:cover}');
+            win.document.write('table{width:100%;border-collapse:collapse;margin:10px 0}');
+            win.document.write('th{background:#003d7a;color:white;padding:8px;text-align:left;font-size:10pt}');
+            win.document.write('td{padding:6px 8px;border-bottom:1px solid #ddd;font-size:10pt;vertical-align:top;color:#000}');
+            win.document.write('.room-header{font-weight:bold;font-size:12pt;color:#003d7a;padding:10px;background:#f5f5f5}');
+            win.document.write('.paint-brands{font-style:italic;color:#666;padding:5px 10px;font-size:10pt}');
+            win.document.write('.photo-cell{text-align:center;padding:10px}');
+            win.document.write('.photo-cell img{max-width:150px;max-height:150px;border-radius:8px}');
+            win.document.write('.total-box{background:#f5f5f5;padding:15px;margin:15px 0;border:2px solid #003d7a}');
+            win.document.write('.total-row{display:flex;justify-content:space-between;padding:3px 0;font-size:11pt}');
+            win.document.write('.grand-total{font-size:18pt;font-weight:bold;color:#003d7a;border-top:3px solid #003d7a;margin-top:8px;padding-top:8px}');
+            win.document.write('h2{color:#003d7a;font-size:12pt;margin:12px 0 6px 0;font-weight:bold;border-bottom:2px solid #003d7a;padding-bottom:4px}');
+            win.document.write('p{color:#000;font-size:10pt;margin:6px 0;line-height:1.4}');
+            win.document.write('ul{margin:6px 0;padding-left:20px;color:#000}li{margin:3px 0;color:#000;line-height:1.4;font-size:10pt}');
+            win.document.write('strong{color:#000;font-weight:bold}');
+            win.document.write('.page-break{page-break-before:always;padding-top:0}');
+            win.document.write('.signature-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin:25px 0}');
+            win.document.write('.signature-block{border-top:2px solid #000;padding-top:8px;margin-top:35px}');
+            win.document.write('</style></head><body>');
+            
+            // Blue decorative bar at top
+            win.document.write('<div class="blue-bar"></div>');
+            
+            // Header
+            win.document.write('<div class="header">');
+            if (companySettings?.logoUrl) {
+                win.document.write('<img src="' + companySettings.logoUrl + '" alt="Logo">');
+            } else {
+                win.document.write('<h1><span class="stars">★ ★ ★ ★ ★</span> ' + (companySettings?.companyName || 'Northern Star Painters') + '</h1>');
+            }
+            win.document.write('<div class="company-info">');
+            win.document.write((companySettings?.companyAddress || '1300 4th Street SE, Suite 412, Washington DC 20003') + '<br>');
+            win.document.write('Phone: ' + (companySettings?.companyPhone || '+1 (202) 743-5072') + ' • ' + (companySettings?.companyWebsite || 'www.northernstarpainters.com'));
+            win.document.write('</div></div>');
+            
+            // Generate proposal number (using timestamp)
+            const proposalNumber = 'NSP-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-6);
+            const validUntilDate = new Date();
+            validUntilDate.setDate(validUntilDate.getDate() + 15);
+            const validUntil = validUntilDate.toLocaleDateString();
+            
+            win.document.write('<p style="text-align:center;font-size:18pt;margin:25px 0 15px 0;font-weight:bold;color:#003d7a">' + currentEstimate.jobType + ' PAINTING PROPOSAL</p>');
+            
+            // Proposal Details Box
+            win.document.write('<div class="proposal-details">');
+            win.document.write('<p><strong>Proposal Number:</strong> ' + proposalNumber + '</p>');
+            win.document.write('<p><strong>Date Prepared:</strong> ' + date + '</p>');
+            win.document.write('<p><strong>Valid Until:</strong> ' + validUntil + ' (15 days)</p>');
+            win.document.write('<p><strong>Project Address:</strong> ' + (customer.address || 'See customer information below') + '</p>');
+            win.document.write('<p><strong>Project Name:</strong> ' + currentEstimate.jobName + '</p>');
+            win.document.write('</div>');
+            
+            // Prepared By + Prepared For
+            win.document.write('<div class="info-grid">');
+            
+            // Prepared By
+            win.document.write('<div class="info-box"><div class="section-title">PREPARED BY</div>');
+            if (companySettings?.consultantPhotoUrl) {
+                win.document.write('<div class="consultant-box">');
+                win.document.write('<img src="' + companySettings.consultantPhotoUrl + '" class="consultant-photo">');
+                win.document.write('<div>');
+            }
+            win.document.write('<p><strong>' + (companySettings?.consultantName || 'Sales Consultant') + '</strong></p>');
+            if (companySettings?.consultantTitle) win.document.write('<p>' + companySettings.consultantTitle + '</p>');
+            if (companySettings?.consultantPhone) win.document.write('<p>Phone: ' + companySettings.consultantPhone + '</p>');
+            if (companySettings?.consultantEmail) win.document.write('<p>Email: ' + companySettings.consultantEmail + '</p>');
+            if (companySettings?.consultantPhotoUrl) {
+                win.document.write('</div></div>');
+            }
+            win.document.write('</div>');
+            
+            // Prepared For
+            win.document.write('<div class="info-box"><div class="section-title">PREPARED FOR</div>');
+            win.document.write('<p><strong>' + customer.name + '</strong></p>');
+            if (customer.address) win.document.write('<p>' + customer.address + '</p>');
+            if (customer.phone) win.document.write('<p>Phone: ' + customer.phone + '</p>');
+            if (customer.email) win.document.write('<p>Email: ' + customer.email + '</p>');
+            win.document.write('</div></div>');
+            
+            // PRICE SUMMARY - NEW SECTION (SHOWN FIRST!)
+            const basePrice = currentEstimate.basePrice || currentEstimate.grandTotal || 0;
+            const discountAmount = currentEstimate.discountAmount || 0;
+            const subtotal = basePrice - discountAmount;
+            const depositAmount = subtotal * 0.5;
+            const balanceAmount = subtotal * 0.5;
+            
+            win.document.write('<div class="section-title">PRICE SUMMARY</div>');
+            win.document.write('<div style="margin:15px 0;">');
+            win.document.write('<div class="price-row"><span>Base Price</span><span>$' + basePrice.toFixed(2) + '</span></div>');
+            
+            if (currentEstimate.discountType && discountAmount > 0) {
+                const discountLabel = currentEstimate.discountName || 'Discount';
+                const discountDisplay = currentEstimate.discountType === 'percentage' ? 
+                    discountLabel + ' (' + currentEstimate.discountValue + '%)' : discountLabel;
+                win.document.write('<div class="price-row"><span>' + discountDisplay + '</span><span style="color:#e74c3c;">-$' + discountAmount.toFixed(2) + '</span></div>');
+            }
+            
+            win.document.write('<div class="price-row total"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>');
+            win.document.write('<div class="price-row"><span>Deposit Due (50%)</span><span>$' + depositAmount.toFixed(2) + '</span></div>');
+            win.document.write('<div class="price-row"><span>Balance</span><span>$' + balanceAmount.toFixed(2) + '</span></div>');
+            win.document.write('</div>');
+            
+            // PROJECT SUMMARY - NEW SECTION (Auto-generated room list + custom notes)
+            const projectNotes = document.getElementById('projectSummaryNotes')?.value || '';
+            
+            win.document.write('<div class="section-title">PROJECT SUMMARY</div>');
+            win.document.write('<p><strong>Included in the price above:</strong></p>');
+            win.document.write('<ul>');
+            
+            groupedRooms.forEach(room => {
+                const surfaceList = room.surfaces.map(s => s.surfaceType || s.type || 'Surface').join(', ');
+                win.document.write('<li><strong>' + room.name + '</strong> (' + surfaceList + ')</li>');
+            });
+            
+            win.document.write('</ul>');
+            
+            if (projectNotes) {
+                win.document.write('<p style="margin-top:15px;">' + projectNotes + '</p>');
+            }
+            
+            // PROJECT DETAILS (Optional - based on user selection)
+            const showBreakdown = document.getElementById('pdfDetailLevel')?.value !== 'total';
+            
+            if (showBreakdown) {
+                win.document.write('<div class="section-title" style="margin-top:25px;">PROJECT DETAILS</div>');
+                win.document.write('<table><thead><tr><th style="width:35%">Surface</th><th>Paint/Primer</th><th>Sheen</th><th>Color</th><th>Coats</th><th style="width:160px">Photo</th></tr></thead><tbody>');
+                
+                groupedRooms.forEach(room => {
+                    const rowCount = room.surfaces.length + 1;
+                    
+                    win.document.write('<tr><td colspan="5" class="room-header">' + room.name.toUpperCase() + '</td>');
+                    if (room.photoData) {
+                        win.document.write('<td rowspan="' + (rowCount + 1) + '" class="photo-cell"><img src="' + room.photoData + '"></td>');
+                    } else {
+                        win.document.write('<td rowspan="' + (rowCount + 1) + '" class="photo-cell"></td>');
+                    }
+                    win.document.write('</tr>');
+                    
+                    room.surfaces.forEach(surface => {
+                        const product = products.find(p => p.id === surface.productId);
+                        win.document.write('<tr>');
+                        win.document.write('<td style="padding-left:20px">' + (surface.surfaceType || surface.type || 'Surface') + '</td>');
+                        win.document.write('<td>' + (product ? product.name : 'Product') + '</td>');
+                        win.document.write('<td>' + surface.sheen + '</td>');
+                        win.document.write('<td>' + surface.color + '</td>');
+                        win.document.write('<td>' + surface.coats + ' / 0</td>');
+                        win.document.write('</tr>');
+                    });
+                    
+                    const brands = [...new Set(room.surfaces.map(s => {
+                        const p = products.find(pr => pr.id === s.productId);
+                        return p ? p.brand : 'Brand';
+                    }))].join(', ');
+                    win.document.write('<tr><td colspan="5" class="paint-brands">Paint Brands: ' + brands + '</td></tr>');
+                    
+                    if (room.notes) {
+                        win.document.write('<tr><td colspan="5" style="padding:10px;font-style:italic;color:#666;">Note: ' + room.notes + '</td></tr>');
+                    }
+                });
+                
+                win.document.write('</tbody></table>');
+            }
+            
+            // Contract Terms - Load from database and format
+            const contractText = await getContractTermsForPDF(currentEstimate.jobType);
+            const formattedContract = formatContractTextForPDF(contractText);
+            
+            win.document.write('<div class="page-break"></div>');
+            win.document.write('<div class="blue-bar"></div>');
+            win.document.write('<div class="section-title">' + currentEstimate.jobType.toUpperCase() + ' PAINTING CONTRACT TERMS</div>');
+            win.document.write(formattedContract);
+            
+            // COMMON SECTIONS (both Interior and Exterior)
+            win.document.write('<h2>MISCELLANEOUS</h2>');
+            win.document.write('<ul>');
+            win.document.write('<li>Please review this proposal thoroughly to understand fully the inclusions and exclusions regarding the project scope. Any items, areas, or components not explicitly mentioned are not covered.</li>');
+            win.document.write('<li>For your ' + currentEstimate.jobType + ' painting project, a dedicated Job Site Supervisor (JSS) will be assigned to oversee the painting operations, manage the crew, and address any of your concerns throughout the duration of the project.</li>');
+            win.document.write('<li>This proposal details the number of paint coats, and please note that any additional coats will incur extra charges.</li>');
+            win.document.write('<li>Northern Star Painting is fully insured, complying with all local and federal regulations.</li>');
+            win.document.write('</ul>');
+            
+            win.document.write('<h2>CLEAN-UP</h2>');
+            win.document.write('<p><strong>Daily:</strong></p>');
+            win.document.write('<ul><li>On a daily basis, Ladders are taken down and stored in a designated area along with all other tools and supplies. All debris will be swept and removed from the property or deposited in the appropriate trash receptacle according to the customer\'s preference.</li></ul>');
+            win.document.write('<p><strong>Upon Completion:</strong></p>');
+            win.document.write('<ul><li>Upon project completion, we will conduct a comprehensive clean-up followed by a final walk-through with you to review the work done, provided you are available. All tools, supplies & equipment will be removed from the property. Any left-over paint will be neatly put away in a place of your choosing.</li></ul>');
+            
+            win.document.write('<h2>WARRANTIES</h2>');
+            win.document.write('<p>Our commitment to you extends beyond just delivering exceptional service; we also offer a comprehensive warranty to ensure your peace of mind. This warranty covers any issues arising from our workmanship, reflecting our confidence in the quality of our work. Our warranty covers:</p>');
+            win.document.write('<ul><li>All aspects of our work provided we supply the materials and perform the service.</li><li>The integrity and durability of our work against defects in workmanship.</li></ul>');
+            win.document.write('<p><strong>What\'s Not Covered:</strong></p>');
+            win.document.write('<ul><li>Materials not provided by us or work not performed directly by our team.</li><li>Varnished surfaces and those composed of or containing galvanized metal due to their specific care requirements.</li><li>The cost of paint for any necessary touch-ups or repairs.</li><li>Horizontal surfaces and designs that inherently collect moisture such as decks and roofs.</li></ul>');
+            
+            win.document.write('<h2>PAYMENT AND PRICING</h2>');
+            win.document.write('<p><strong>PROPOSAL EXPIRATION:</strong></p>');
+            win.document.write('<ul><li>The proposal pricing and scope of work expires within after thirty (30) days from the date on the top right corner of the first page of the proposal.</li></ul>');
+            win.document.write('<p><strong>PAYMENT METHODS:</strong></p>');
+            win.document.write('<ul><li>We accept checks and credit cards. The credit cards we accept are Visa, MasterCard and American Express. You will be sent an invoice via email with a link to authorize a credit card or check payment. A 3.5% convenience fee will be added for the use of a credit card.</li></ul>');
+            win.document.write('<p><strong>DEPOSIT:</strong></p>');
+            win.document.write('<ul><li>We require a deposit of 50% to schedule your project.</li></ul>');
+            win.document.write('<p><strong>PAYMENT:</strong></p>');
+            win.document.write('<ul><li>At the completion of the project, we ask that you make yourself available to do our pride walk with your Job Site Supervisor. We also ask that you have your payment ready for the Job Site Supervisor at the completion of the pride walk. If payment is not received within 5 days of the date of the invoice there will be late fees and interest of 12% added to the cost of the project.</li></ul>');
+            
+            // Signatures
+            win.document.write('<div class="section-title">SIGNATURES</div>');
+            win.document.write('<p style="margin:20px 0">The undersigned have read and accept the terms stated herein.</p>');
+            win.document.write('<div class="signature-grid">');
+            win.document.write('<div><p><strong>Company Representative</strong></p><div class="signature-block">');
+            win.document.write('<p>Name: _______________________________</p>');
+            win.document.write('<p>Date: _______________________________</p>');
+            win.document.write('<p>Signature: _______________________________</p></div></div>');
+            win.document.write('<div><p><strong>Customer</strong></p><div class="signature-block">');
+            win.document.write('<p>Name: _______________________________</p>');
+            win.document.write('<p>Date: _______________________________</p>');
+            win.document.write('<p>Signature: _______________________________</p></div></div></div>');
+            
+            // Footer
+            win.document.write('<div style="text-align:center;margin-top:50px;padding-top:20px;border-top:1px solid #ddd;color:#666;font-size:10pt">');
+            win.document.write('<p><strong>' + (companySettings?.companyName || 'Northern Star Painters') + '</strong></p>');
+            win.document.write('<p>' + (companySettings?.companyAddress || '1300 4th Street SE, Suite 412, Washington DC 20003') + '</p>');
+            win.document.write('<p>Phone: ' + (companySettings?.companyPhone || '+1 (202) 743-5072') + ' • ' + (companySettings?.companyWebsite || 'www.northernstarpainters.com') + '</p>');
+            win.document.write('<p style="margin-top:10px">Thank you for choosing us!</p></div>');
+            
+            win.document.write('</body></html>');
+            win.document.close();
+            setTimeout(() => win.print(), 1000);
+        };
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js').catch(function(){});
+        }
+
+    </script>
+</body>
+</html>
